@@ -81,6 +81,7 @@ async function validateGamertag(xbl, gamertag) {
         });
     }
     catch (_a) { }
+    console.log(validGamertag);
     if (!validGamertag)
         return false;
     if (validGamertag)
@@ -198,7 +199,7 @@ client.once('ready', () => {
         ]
     });
 });
-const DB_API = 'https://mcbe-playerbans.herokuapp.com';
+const DB_API = 'http://localhost:5000';
 // TYPES ////////////////////////////
 class BannedPlayerInfo {
 }
@@ -409,7 +410,7 @@ class commandManager {
         const xbl = await exports.auth.getXboxToken();
         // validate if gamertag or xuid exist
         if (xuid) {
-            if (!validateXuid(xbl, xuid)) {
+            if (!await validateXuid(xbl, xuid)) {
                 embed = getTemplate()
                     .setDescription(`Not a valid xuid!`);
                 return interaction.editReply({ embeds: [embed] });
@@ -419,7 +420,7 @@ class commandManager {
         else {
             if (gamertag == null)
                 return; //shouldn't be nulled
-            if (!validateGamertag(xbl, gamertag)) {
+            if (!await validateGamertag(xbl, gamertag)) {
                 embed = getTemplate()
                     .setDescription(`Not a valid gamertag!`);
                 return interaction.editReply({ embeds: [embed] });
@@ -433,7 +434,7 @@ class commandManager {
         }
         //send to private channel for admins to look over the report
         interaction.member.user.username;
-        const reportEmbed = new discord_js_1.MessageEmbed().setAuthor('Ban Player Request')
+        const reportEmbed = new discord_js_1.MessageEmbed().setAuthor('Ban Player Request', 'https://cdn.discordapp.com/icons/958156910480216174/ad9d2b5e3aca1f23fa830cab9ff4048e.webp?size=96')
             .setDescription(`` +
             `\n\n**Xuid**: ${xuid}` +
             `\n**Gamertag**: ${gamertag}` +

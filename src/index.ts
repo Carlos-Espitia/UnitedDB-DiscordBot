@@ -49,6 +49,7 @@ export async function validateGamertag(xbl: any, gamertag: string) {
             userHash: xbl.userHash,
             XSTSToken: xbl.XSTSToken})
     }catch{}
+    console.log(validGamertag)
     if(!validGamertag) return false
     if(validGamertag) return true
 }
@@ -170,7 +171,7 @@ client.once('ready', () => {
     })
 })
 
-const DB_API = 'https://mcbe-playerbans.herokuapp.com'
+const DB_API = 'http://localhost:5000'
 
 // TYPES ////////////////////////////
 class BannedPlayerInfo {
@@ -234,7 +235,7 @@ class commandManager {
 
             return interaction.editReply({ embeds: [embed]});
         } catch (err: any) {
-            embed = getTemplate().setDescription(err.response.data)
+                embed = getTemplate().setDescription(err.response.data)
             return interaction.editReply({ embeds: [embed]});
         }
     }
@@ -392,7 +393,7 @@ class commandManager {
         const xbl = await auth.getXboxToken()
         // validate if gamertag or xuid exist
         if(xuid) {
-            if(!validateXuid(xbl,xuid)) {
+            if(!await validateXuid(xbl,xuid)) {
                 embed = getTemplate()
                 .setDescription(`Not a valid xuid!`)
                 return interaction.editReply({ embeds: [embed]});
@@ -400,7 +401,7 @@ class commandManager {
             gamertag = await getGamertagByXuid(xbl,xuid)
         } else {
             if(gamertag == null) return //shouldn't be nulled
-            if(!validateGamertag(xbl,gamertag)) {
+            if(!await validateGamertag(xbl,gamertag)) {
                 embed = getTemplate()
                 .setDescription(`Not a valid gamertag!`)
                 return interaction.editReply({ embeds: [embed]});
