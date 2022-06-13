@@ -44,7 +44,6 @@ export async function validateGamertag(xbl: any, gamertag: string) {
             userHash: xbl.userHash,
             XSTSToken: xbl.XSTSToken})
     }catch{}
-    console.log(validGamertag)
     if(!validGamertag) return false
     if(validGamertag) return true
 }

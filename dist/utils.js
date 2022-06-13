@@ -73,7 +73,6 @@ async function validateGamertag(xbl, gamertag) {
         });
     }
     catch (_a) { }
-    console.log(validGamertag);
     if (!validGamertag)
         return false;
     if (validGamertag)
