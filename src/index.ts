@@ -5,6 +5,7 @@ import { config } from './config'
 import { Authflow } from 'prismarine-auth';
 import { CMDMAN, RegisterCommands } from "./commands";
 import { getTemplate } from "./utils";
+import axios from "axios";
 export const auth = new Authflow(`QSMX`, `./auth`, {})
 
 export const DB_API = 'http://localhost:5000'
@@ -55,15 +56,18 @@ client.on('interactionCreate', async (interaction) => {
 
             //@ts-ignore // .delete() is not included in the discord js types
             try{interaction.message.delete()} catch {}
-            const id = interaction.message?.embeds[0].description?.split('ID: ')[1].split('\n')[0].trim()
-            
-            const declinedReport = getTemplate().setDescription(`${interaction.user.username} has declined the report. Reason: ${reason_Input}`);
+
+            // ( client.channels.cache.get(config.LogChannel) as TextChannel ).send({embeds: [declinedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch()
 
             //notify reporter
-            ( client.channels.cache.get(config.LogChannel) as TextChannel ).send({embeds: [declinedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch()
-            if(!id) return
+            const id = interaction.message?.embeds[0].description?.split('ID: ')[1].split('\n')[0].trim()
+            const declinedReport = getTemplate().setDescription(`${interaction.user.username} has declined the report. Reason: ${reason_Input}`);
+
+            //@ts-ignore // .delete() is not included in the discord js types
+            interaction.reply({ embeds: [declinedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
+            if(!id) return // not supposed to be undefined 
             const user = await client.users.fetch(id).catch();
-            user.send({ embeds: [ declinedReport ] }).catch();
+            user.send({ embeds: [ declinedReport ] }).catch(); // might change msg later
         }
     }
 
@@ -72,14 +76,63 @@ client.on('interactionCreate', async (interaction) => {
             if(!config.Admins.includes(interaction.user.id) && !config.Staff.includes(interaction.user.id)) return console.log('this user is not allowed to review reports')
 
             //@ts-ignore // .delete() is not included in the discord js types
-            await interaction.message.delete()
-
-            const acceptedReport = getTemplate().setDescription(`${interaction.user.username} has accepted the report.`);
+            try{interaction.message.delete()} catch {}
 
             //notify reporter
-            console.log(interaction.message);
-            ( client.channels.cache.get(config.LogChannel) as TextChannel ).send({embeds: [acceptedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch()
+
+            //@ts-ignore // .delete() is not included in the discord js types
+            // interaction.reply({ embeds: [acceptedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
+
+            // ( client.channels.cache.get(config.LogChannel) as TextChannel ).send({embeds: [acceptedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch()
+
+            // console.log(interaction.message?.embeds[0].description)
+
+            const xuid = interaction.message?.embeds[0].description?.split('**Xuid**: ')[1].split('\n')[0].trim()
+            const reason = interaction.message?.embeds[0].description?.split('**Reason**: ')[1].split('\n')[0].trim()
+            const proof = interaction.message?.embeds[0].description?.split('**Proof**: ')[1].split('\n')[0].trim()
+
+            if(!interaction.member) return // not supposed to be undefined 
+
+            const loading = getTemplate()
+            .setDescription('Checking for authorization...')
+            await interaction.reply({embeds: [loading]})
+
+            try {
+                const response: BanningPlayerPost = await (await axios.post(`${DB_API}/BannedPlayers/Add/${xuid}`, {
+                    reason: reason, 
+                    proof: proof,
+                    discordUser: `${interaction.member.user.username}#${interaction.member.user.discriminator}`
+                },{
+                    headers: {
+                        "authorization": config.UnitedDBLoginStaff
+                    }
+                })).data
+                const embed = getTemplate()
+                .setDescription(``+
+                `\n${response.message}`+
+                `\n**Xuid**: ${response.xuid}`+
+                `\n**Gamertag**: ${response.gamertag}`+
+                `\n**Reason**: ${response.reason}`+
+                `\n**Proof**: ${response.proof}`+
+                `\n**Banned by**: ${response.bannedBy}`+
+                `\n**Date**: <t:${(Date.now()/1000).toString().split('.')[0]}:F>`)
+                //@ts-ignore
+                interaction.editReply({ embeds: [embed]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
+            } catch (err: any) {
+                const embed = getTemplate()
+                .setDescription(err.response.data)
+                //@ts-ignore
+                return interaction.editReply({ embeds: [embed]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
+            }
+
+            const id = interaction.message?.embeds[0].description?.split('ID: ')[1].split('\n')[0].trim();
+            const acceptedReport = getTemplate().setDescription(`${interaction.user.username} has accepted the report.`);
+
+            if(!id) return // not supposed to be undefined 
+            const user = await client.users.fetch(id).catch();
+            user.send({ embeds: [ acceptedReport ] }).catch(); // might change msg later
         }
+
         if(interaction.customId === 'Request_Decline') {
             if(!config.Admins.includes(interaction.user.id) && !config.Staff.includes(interaction.user.id)) return console.log('this user is not allowed to review reports')
 

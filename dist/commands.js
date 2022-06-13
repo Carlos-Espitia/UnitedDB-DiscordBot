@@ -176,7 +176,7 @@ class commandManager {
         const inviteMsg = new discord_js_1.MessageEmbed()
             .setTitle('Click Here')
             .setURL('https://discord.com/oauth2/authorize?client_id=984206356334657646&scope=bot&permissions=549755289087')
-            .setDescription(`**Invite GlobalMCPEDB To Your Discord!**`);
+            .setDescription(`**Invite UnitedDB To Your Discord!**`);
         return await interaction.reply({ embeds: [inviteMsg] });
     }
     async lookUp(interaction) {
@@ -308,7 +308,7 @@ class commandManager {
         var gamertag = interaction.options.getString('gamertag');
         var xuid = interaction.options.getString('xuid');
         var embed;
-        if (!config_1.config.Admins.includes(interaction.member.user.id) && !config_1.config.Staff.includes(interaction.member.user.id)) {
+        if (!config_1.config.Admins.includes(interaction.member.user.id)) {
             embed = (0, utils_1.getTemplate)()
                 .setDescription(`You do not have permission to unban players!`);
             return interaction.editReply({ embeds: [embed] });
@@ -328,7 +328,7 @@ class commandManager {
         try {
             const response = await (await axios_1.default.delete(`${index_1.DB_API}/BannedPlayers/Remove/${gamertagORxuid}`, {
                 headers: {
-                    "authorization": config_1.config.UnitedDBLoginStaff
+                    "authorization": config_1.config.UnitedDBLoginAdmin
                 }
             })).data;
             embed = (0, utils_1.getTemplate)()
