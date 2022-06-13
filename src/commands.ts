@@ -203,7 +203,7 @@ class commandManager {
                 `\n**Gamertag**: ${response.gamertag}`+
                 `\n**Reason**: ${response.reason}`+
                 `\n**Proof**: ${response.proof}`+
-                `\n**Date**: ${response.date}`)
+                `\n**Date**: <t:${(Date.now()/1000).toString().split('.')[0]}:F>`)
                 return interaction.editReply({ embeds: [embed]});
             } catch (err: any) {
                 embed = getTemplate()
@@ -225,7 +225,7 @@ class commandManager {
             `\n**Gamertag**: ${response.gamertag}`+
             `\n**Reason**: ${response.reason}`+
             `\n**Proof**: ${response.proof}`+
-            `\n**Date**: ${response.date}`)
+            `\n**Date**: <t:${(Date.now()/1000).toString().split('.')[0]}:F>`)
             return interaction.editReply({ embeds: [embed]});
         } catch (err: any) {
             embed = getTemplate()
@@ -341,7 +341,7 @@ class commandManager {
         `\n**Gamertag**: ${gamertag}`+
         `\n**Reason**: ${reason}`+
         `\n**Proof**: ${proof}`+
-        `\n**Date**: ${new Date().toLocaleString()}`+
+        `\n**Date**: <t:${(Date.now()/1000).toString().split('.')[0]}:F>`+
         `\n\n**From**`+
         `\nUsername: ${interaction.member.user.username}#${interaction.member.user.discriminator}`+
         `\nID: ${interaction.member.user.id}`+
@@ -371,7 +371,7 @@ class commandManager {
         `\n**Gamertag**: ${gamertag}`+
         `\n**Reason**: ${reason}`+
         `\n**Proof**: ${proof}`+
-        `\n**Date**: ${new Date().toLocaleString()}`)
+        `\n**Date**: <t:${(Date.now()/1000).toString().split('.')[0]}:F>`)
         return interaction.editReply({ embeds: [embed]});
     }
 }

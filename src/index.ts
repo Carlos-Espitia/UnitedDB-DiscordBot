@@ -1,5 +1,5 @@
 import Discord, {Intents, MessageActionRow, MessageButton, MessageEmbed, TextChannel } from "discord.js";
-export const client = new Discord.Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+export const client = new Discord.Client({ intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES ] });
 import { Modal, TextInputComponent, showModal } from "discord-modals";
 import { config } from './config'
 import { Authflow } from 'prismarine-auth';
@@ -53,12 +53,15 @@ client.on('interactionCreate', async (interaction) => {
 
             //@ts-ignore // .delete() is not included in the discord js types
             interaction.message.delete()
-
+            const id = interaction.message?.embeds[0].description?.split('ID: ')[1].split('\n')[0].trim()
+            
             const declinedReport = getTemplate().setDescription(`${interaction.user.username} has declined the report. Reason: ${reason_Input}`);
 
             //notify reporter
             ( client.channels.cache.get(config.LogChannel) as TextChannel ).send({embeds: [declinedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch()
-
+            if(!id) return
+            const user = await client.users.fetch(id).catch();
+            user.send({ embeds: [ declinedReport ] }).catch();
         }
     }
 

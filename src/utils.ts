@@ -2,7 +2,7 @@ import * as XboxLiveAPI from '@xboxreplay/xboxlive-api';
 import { MessageEmbed } from 'discord.js';
 
 /// xbox live api stuff 
-export async function getXuidByGamertag(xbl: any, gamertag: string) {
+export async function getXuidByGamertag(xbl: any, gamertag: string): Promise<number | undefined> {
     try{
         return parseInt(await XboxLiveAPI.getPlayerXUID(gamertag,{
             userHash: xbl.userHash,
@@ -10,7 +10,7 @@ export async function getXuidByGamertag(xbl: any, gamertag: string) {
     } catch {}
 }
 
-export async function getGamertagByXuid(xbl: any, xuid: number | string) {
+export async function getGamertagByXuid(xbl: any, xuid: number | string): Promise<string | undefined> {
     //xuid must be validated first 
     try{
         var data = await XboxLiveAPI.getPlayerSettings(xuid, {
@@ -23,7 +23,7 @@ export async function getGamertagByXuid(xbl: any, xuid: number | string) {
     }
 }
 
-export async function validateXuid(xbl: any, xuid: string | number) {
+export async function validateXuid(xbl: any, xuid: string | number): Promise<boolean | undefined> {
     var xboxData;
     try{
         xboxData = await XboxLiveAPI.getPlayerSettings(xuid, {
@@ -37,7 +37,7 @@ export async function validateXuid(xbl: any, xuid: string | number) {
     if(xboxData) return true
 }
 
-export async function validateGamertag(xbl: any, gamertag: string) {
+export async function validateGamertag(xbl: any, gamertag: string): Promise<boolean | undefined> {
     var validGamertag;
     try{
         validGamertag = await XboxLiveAPI.getPlayerXUID(gamertag, {
@@ -52,7 +52,7 @@ export function getTemplate(): MessageEmbed {
     return new MessageEmbed().setAuthor('United Realms', 'https://cdn.discordapp.com/icons/958156910480216174/ad9d2b5e3aca1f23fa830cab9ff4048e.webp?size=96')
 }
 
-export function isValidUrl(url: string) {
+export function isValidUrl(url: string): boolean {
     const matchpattern = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/gm;
     return matchpattern.test(url);
 }
