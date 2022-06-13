@@ -3,16 +3,18 @@ import { MessageEmbed } from 'discord.js';
 
 /// xbox live api stuff 
 export async function getXuidByGamertag(xbl: any, gamertag: string): Promise<number | undefined> {
-    try{
-        return parseInt(await XboxLiveAPI.getPlayerXUID(gamertag,{
+    try {
+        return parseInt(await XboxLiveAPI.getPlayerXUID(gamertag, {
             userHash: xbl.userHash,
             XSTSToken: xbl.XSTSToken}))
-    } catch {}
+    } catch(err) {
+        console.error(err)
+    }
 }
 
 export async function getGamertagByXuid(xbl: any, xuid: number | string): Promise<string | undefined> {
     //xuid must be validated first 
-    try{
+    try {
         var data = await XboxLiveAPI.getPlayerSettings(xuid, {
             userHash: xbl.userHash,
             XSTSToken: xbl.XSTSToken}, 
@@ -25,27 +27,30 @@ export async function getGamertagByXuid(xbl: any, xuid: number | string): Promis
 
 export async function validateXuid(xbl: any, xuid: string | number): Promise<boolean | undefined> {
     var xboxData;
-    try{
+    try {
         xboxData = await XboxLiveAPI.getPlayerSettings(xuid, {
             userHash: xbl.userHash,
             XSTSToken: xbl.XSTSToken}, 
             ['Gamertag'])
-    }catch (err) {
+    } catch (err) {
         console.log(err)
+        return false
     }
-    if(!xboxData) return false
     if(xboxData) return true
+    else return true
 }
 
 export async function validateGamertag(xbl: any, gamertag: string): Promise<boolean | undefined> {
     var validGamertag;
-    try{
+    try {
         validGamertag = await XboxLiveAPI.getPlayerXUID(gamertag, {
             userHash: xbl.userHash,
             XSTSToken: xbl.XSTSToken})
-    }catch{}
-    if(!validGamertag) return false
+    } catch (err) {
+        console.error(err)
+    }
     if(validGamertag) return true
+    else return true
 }
 
 export function getTemplate(): MessageEmbed {
