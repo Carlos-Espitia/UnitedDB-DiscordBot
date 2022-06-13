@@ -52,7 +52,7 @@ client.on('interactionCreate', async (interaction) => {
             const reason_Input = interaction.components[0].components[0].value
 
             //@ts-ignore // .delete() is not included in the discord js types
-            interaction.message.delete()
+            try{interaction.message.delete()} catch {}
             const id = interaction.message?.embeds[0].description?.split('ID: ')[1].split('\n')[0].trim()
             
             const declinedReport = getTemplate().setDescription(`${interaction.user.username} has declined the report. Reason: ${reason_Input}`);
@@ -103,7 +103,9 @@ client.on('interactionCreate', async (interaction) => {
         if (interaction.commandName === 'db_ban_player') CMDMAN.banPlayer(interaction)
         if (interaction.commandName === 'db_unban_player') CMDMAN.unbanPlayer(interaction)
         if (interaction.commandName === 'db_request_ban') CMDMAN.requestBanPlayer(interaction)
-        // if (interaction.commandName === 'db_help') CMDMAN.lookUp(interaction)
+        if (interaction.commandName === 'invite') CMDMAN.invite(interaction)
+        if (interaction.commandName === 'info') CMDMAN.info(interaction)
+
     }
 })
 

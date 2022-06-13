@@ -136,10 +136,49 @@ function RegisterCommands() {
             },
         ]
     });
+    commands === null || commands === void 0 ? void 0 : commands.create({
+        name: 'invite',
+        description: 'Invite bot to discord'
+    });
+    commands === null || commands === void 0 ? void 0 : commands.create({
+        name: 'info',
+        description: 'DB and bot information'
+    });
 }
 exports.RegisterCommands = RegisterCommands;
 /////////////////////////////////////////////////////////////////////////////////////
 class commandManager {
+    async info(interaction) {
+        if (!interaction.member)
+            return;
+        const loading = (0, utils_1.getTemplate)()
+            .setDescription('Fetching banned players...');
+        await interaction.reply({ embeds: [loading], ephemeral: true });
+        var embed;
+        try {
+            const bannedPlayers = await (await axios_1.default.get(`${index_1.DB_API}/BannedPlayers`, {
+                headers: {
+                    "authorization": config_1.config.AuthKey
+                }
+            })).data;
+            embed = (0, utils_1.getTemplate)()
+                .setDescription(`Banned player count: ${bannedPlayers.length}`);
+            return interaction.editReply({ embeds: [embed] });
+        }
+        catch (err) {
+            embed = (0, utils_1.getTemplate)().setDescription(err.response.data);
+            return interaction.editReply({ embeds: [embed] });
+        }
+    }
+    async invite(interaction) {
+        if (!interaction.member)
+            return;
+        const inviteMsg = new discord_js_1.MessageEmbed()
+            .setTitle('Click Here')
+            .setURL('https://discord.com/oauth2/authorize?client_id=984206356334657646&scope=bot&permissions=549755289087')
+            .setDescription(`**Invite GlobalMCPEDB To Your Discord!**`);
+        return await interaction.reply({ embeds: [inviteMsg] });
+    }
     async lookUp(interaction) {
         if (!interaction.member)
             return;
@@ -222,7 +261,7 @@ class commandManager {
                     `\n**Gamertag**: ${response.gamertag}` +
                     `\n**Reason**: ${response.reason}` +
                     `\n**Proof**: ${response.proof}` +
-                    `\n**Date**: ${response.date}`);
+                    `\n**Date**: <t:${(Date.now() / 1000).toString().split('.')[0]}:F>`);
                 return interaction.editReply({ embeds: [embed] });
             }
             catch (err) {
@@ -244,7 +283,7 @@ class commandManager {
                 `\n**Gamertag**: ${response.gamertag}` +
                 `\n**Reason**: ${response.reason}` +
                 `\n**Proof**: ${response.proof}` +
-                `\n**Date**: ${response.date}`);
+                `\n**Date**: <t:${(Date.now() / 1000).toString().split('.')[0]}:F>`);
             return interaction.editReply({ embeds: [embed] });
         }
         catch (err) {
@@ -363,7 +402,7 @@ class commandManager {
             `\n**Gamertag**: ${gamertag}` +
             `\n**Reason**: ${reason}` +
             `\n**Proof**: ${proof}` +
-            `\n**Date**: ${new Date().toLocaleString()}` +
+            `\n**Date**: <t:${(Date.now() / 1000).toString().split('.')[0]}:F>` +
             `\n\n**From**` +
             `\nUsername: ${interaction.member.user.username}#${interaction.member.user.discriminator}` +
             `\nID: ${interaction.member.user.id}` +
@@ -386,7 +425,7 @@ class commandManager {
             `\n**Gamertag**: ${gamertag}` +
             `\n**Reason**: ${reason}` +
             `\n**Proof**: ${proof}` +
-            `\n**Date**: ${new Date().toLocaleString()}`);
+            `\n**Date**: <t:${(Date.now() / 1000).toString().split('.')[0]}:F>`);
         return interaction.editReply({ embeds: [embed] });
     }
 }

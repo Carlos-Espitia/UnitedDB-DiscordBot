@@ -116,12 +116,59 @@ export function RegisterCommands() {
             },
         ]
     })
+
+    commands?.create({
+        name: 'invite',
+        description: 'Invite bot to discord'
+    })
+
+    commands?.create({
+        name: 'info',
+        description: 'DB and bot information'
+    })
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 
 
 class commandManager {
+
+    async info(interaction: Discord.CommandInteraction<Discord.CacheType>) {
+        if(!interaction.member) return
+
+        const loading = getTemplate()
+        .setDescription('Fetching banned players...')
+        await interaction.reply({embeds: [loading], ephemeral: true })
+
+        var embed;
+        try {
+            const bannedPlayers: object[] = await (await axios.get(`${DB_API}/BannedPlayers`, {
+                headers: {
+                    "authorization": config.AuthKey
+                }
+            })).data
+
+            embed = getTemplate()
+                .setDescription(`Banned player count: ${bannedPlayers.length}`)
+
+            return interaction.editReply({ embeds: [embed]});
+        } catch (err: any) {
+                embed = getTemplate().setDescription(err.response.data)
+            return interaction.editReply({ embeds: [embed]});
+        }
+
+    }
+
+    async invite(interaction: Discord.CommandInteraction<Discord.CacheType>) {
+        if(!interaction.member) return
+
+        const inviteMsg = new MessageEmbed()
+        .setTitle('Click Here')
+        .setURL('https://discord.com/oauth2/authorize?client_id=984206356334657646&scope=bot&permissions=549755289087')
+        .setDescription(`**Invite GlobalMCPEDB To Your Discord!**`)
+        return await interaction.reply({embeds: [inviteMsg]})
+    }
+
     async lookUp(interaction: Discord.CommandInteraction<Discord.CacheType>) {
         if(!interaction.member) return
 

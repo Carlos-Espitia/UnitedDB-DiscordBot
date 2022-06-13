@@ -21,7 +21,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UnbanningPlayerDelete = exports.BanningPlayerPost = exports.BannedPlayerInfo = exports.DB_API = exports.auth = exports.client = void 0;
 const discord_js_1 = __importStar(require("discord.js"));
-exports.client = new discord_js_1.default.Client({ intents: [discord_js_1.Intents.FLAGS.GUILDS, discord_js_1.Intents.FLAGS.GUILD_MESSAGES] });
+exports.client = new discord_js_1.default.Client({ intents: [discord_js_1.Intents.FLAGS.GUILDS, discord_js_1.Intents.FLAGS.GUILD_MESSAGES, discord_js_1.Intents.FLAGS.DIRECT_MESSAGES] });
 const discord_modals_1 = require("discord-modals");
 const config_1 = require("./config");
 const prismarine_auth_1 = require("prismarine-auth");
@@ -50,14 +50,23 @@ const BMAN = new buttonManager();
 //////////////////////////////////////
 //////////////////////////////////////
 exports.client.on('interactionCreate', async (interaction) => {
+    var _a, _b;
     if (interaction.isModalSubmit()) {
         if (interaction.customId === 'Request_Decline_Modal') {
             const reason_Input = interaction.components[0].components[0].value;
             //@ts-ignore // .delete() is not included in the discord js types
-            interaction.message.delete();
+            try {
+                interaction.message.delete();
+            }
+            catch (_c) { }
+            const id = (_b = (_a = interaction.message) === null || _a === void 0 ? void 0 : _a.embeds[0].description) === null || _b === void 0 ? void 0 : _b.split('ID: ')[1].split('\n')[0].trim();
             const declinedReport = (0, utils_1.getTemplate)().setDescription(`${interaction.user.username} has declined the report. Reason: ${reason_Input}`);
             //notify reporter
             exports.client.channels.cache.get(config_1.config.LogChannel).send({ embeds: [declinedReport] }).then(msg => { setTimeout(() => msg.delete(), 7000); }).catch();
+            if (!id)
+                return;
+            const user = await exports.client.users.fetch(id).catch();
+            user.send({ embeds: [declinedReport] }).catch();
         }
     }
     if (interaction.isButton()) {
@@ -97,7 +106,10 @@ exports.client.on('interactionCreate', async (interaction) => {
             commands_1.CMDMAN.unbanPlayer(interaction);
         if (interaction.commandName === 'db_request_ban')
             commands_1.CMDMAN.requestBanPlayer(interaction);
-        // if (interaction.commandName === 'db_help') CMDMAN.lookUp(interaction)
+        if (interaction.commandName === 'invite')
+            commands_1.CMDMAN.invite(interaction);
+        if (interaction.commandName === 'info')
+            commands_1.CMDMAN.info(interaction);
     }
 });
-exports.client.login('OTg0MjA2MzU2MzM0NjU3NjQ2.GlbCPM.4rud0IjRCCmx0S_jSfSFQp8e4hrfCTxH8zhIK8');
+exports.client.login(config_1.config.botToken);
