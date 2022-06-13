@@ -71,7 +71,7 @@ exports.client.on('interactionCreate', async (interaction) => {
     }
     if (interaction.isButton()) {
         if (interaction.customId === 'Request_Accept') {
-            if (!config_1.config.Admins.includes(interaction.user.id) && !config_1.config.Authorities.includes(interaction.user.id))
+            if (!config_1.config.Admins.includes(interaction.user.id) && !config_1.config.Staff.includes(interaction.user.id))
                 return console.log('this user is not allowed to review reports');
             //@ts-ignore // .delete() is not included in the discord js types
             await interaction.message.delete();
@@ -81,7 +81,7 @@ exports.client.on('interactionCreate', async (interaction) => {
             exports.client.channels.cache.get(config_1.config.LogChannel).send({ embeds: [acceptedReport] }).then(msg => { setTimeout(() => msg.delete(), 7000); }).catch();
         }
         if (interaction.customId === 'Request_Decline') {
-            if (!config_1.config.Admins.includes(interaction.user.id) && !config_1.config.Authorities.includes(interaction.user.id))
+            if (!config_1.config.Admins.includes(interaction.user.id) && !config_1.config.Staff.includes(interaction.user.id))
                 return console.log('this user is not allowed to review reports');
             const modal = new discord_modals_1.Modal()
                 .setCustomId('Request_Decline_Modal')

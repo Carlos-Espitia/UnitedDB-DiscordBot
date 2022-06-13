@@ -20,6 +20,7 @@ export class BannedPlayerInfo {
     gamertag: string | undefined
     reason: string | undefined
     proof: string | undefined
+    bannedBy: string | undefined
     date: string | undefined
 }
 export class BanningPlayerPost {
@@ -28,6 +29,7 @@ export class BanningPlayerPost {
     gamertag: string | undefined
     reason: string | undefined
     proof: string | undefined
+    bannedBy: string | undefined
     date: string | undefined
 }
 export class UnbanningPlayerDelete {
@@ -67,7 +69,7 @@ client.on('interactionCreate', async (interaction) => {
 
     if (interaction.isButton()) {
         if(interaction.customId === 'Request_Accept') {
-            if(!config.Admins.includes(interaction.user.id) && !config.Authorities.includes(interaction.user.id)) return console.log('this user is not allowed to review reports')
+            if(!config.Admins.includes(interaction.user.id) && !config.Staff.includes(interaction.user.id)) return console.log('this user is not allowed to review reports')
 
             //@ts-ignore // .delete() is not included in the discord js types
             await interaction.message.delete()
@@ -79,7 +81,7 @@ client.on('interactionCreate', async (interaction) => {
             ( client.channels.cache.get(config.LogChannel) as TextChannel ).send({embeds: [acceptedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch()
         }
         if(interaction.customId === 'Request_Decline') {
-            if(!config.Admins.includes(interaction.user.id) && !config.Authorities.includes(interaction.user.id)) return console.log('this user is not allowed to review reports')
+            if(!config.Admins.includes(interaction.user.id) && !config.Staff.includes(interaction.user.id)) return console.log('this user is not allowed to review reports')
 
             const modal = new Modal()
                 .setCustomId('Request_Decline_Modal')

@@ -144,7 +144,7 @@ class commandManager {
         try {
             const bannedPlayers: object[] = await (await axios.get(`${DB_API}/BannedPlayers`, {
                 headers: {
-                    "authorization": config.AuthKey
+                    "authorization": config.UnitedDBLoginStaff
                 }
             })).data
 
@@ -196,7 +196,9 @@ class commandManager {
                 `\n**xuid**: ${playerInfo.xuid}`+
                 `\n**gamertag**: ${playerInfo.gamertag}`+
                 `\n**reason**: ${playerInfo.reason}`+
-                `\n**proof**: ${playerInfo.proof}`)
+                `\n**proof**: ${playerInfo.proof}`+
+                `\n**Banned by**: ${playerInfo.bannedBy}`+
+                `\n**Date**: ${playerInfo.date}`)
 
             return interaction.editReply({ embeds: [embed]});
         } catch (err: any) {
@@ -217,9 +219,9 @@ class commandManager {
         var proof = interaction.options.getString('proof')
 
         var embed;
-        if(!config.Admins.includes(interaction.member.user.id) && !config.Authorities.includes(interaction.member.user.id)) {
+        if(!config.Admins.includes(interaction.member.user.id) && !config.Staff.includes(interaction.member.user.id)) {
             embed = getTemplate()
-            .setDescription(`You do not have permission to unban players!`)
+            .setDescription(`You do not have permission to ban players!`)
             return interaction.editReply({ embeds: [embed]});
         }
 
@@ -237,10 +239,11 @@ class commandManager {
             try {
                 const response: BanningPlayerPost = await (await axios.post(`${DB_API}/BannedPlayers/Add/${gamertagORxuid}`, {
                     reason: reason, 
-                    proof: proof
+                    proof: proof,
+                    discordUser: `${interaction.member.user.username}#${interaction.member.user.discriminator}`
                 },{
                     headers: {
-                        "authorization": config.AuthKey
+                        "authorization": config.UnitedDBLoginStaff
                     }
                 })).data
                 embed = getTemplate()
@@ -250,6 +253,7 @@ class commandManager {
                 `\n**Gamertag**: ${response.gamertag}`+
                 `\n**Reason**: ${response.reason}`+
                 `\n**Proof**: ${response.proof}`+
+                `\n**Banned by**: ${response.bannedBy}`+
                 `\n**Date**: <t:${(Date.now()/1000).toString().split('.')[0]}:F>`)
                 return interaction.editReply({ embeds: [embed]});
             } catch (err: any) {
@@ -260,9 +264,11 @@ class commandManager {
         }
 
         try {
-            const response: BanningPlayerPost = await (await axios.post(`${DB_API}/BannedPlayers/Add/${gamertagORxuid}`, undefined,{
+            const response: BanningPlayerPost = await (await axios.post(`${DB_API}/BannedPlayers/Add/${gamertagORxuid}`, {
+                discordUser: `${interaction.member.user.username}#${interaction.member.user.discriminator}`
+            },{
                 headers: {
-                    "authorization": config.AdminKey
+                    "authorization": config.UnitedDBLoginAdmin
                 }
             })).data
             embed = getTemplate()
@@ -272,6 +278,7 @@ class commandManager {
             `\n**Gamertag**: ${response.gamertag}`+
             `\n**Reason**: ${response.reason}`+
             `\n**Proof**: ${response.proof}`+
+            `\n**Banned by**: ${response.bannedBy}`+
             `\n**Date**: <t:${(Date.now()/1000).toString().split('.')[0]}:F>`)
             return interaction.editReply({ embeds: [embed]});
         } catch (err: any) {
@@ -291,7 +298,7 @@ class commandManager {
 
         var embed;
 
-        if(!config.Admins.includes(interaction.member.user.id) && !config.Authorities.includes(interaction.member.user.id)) {
+        if(!config.Admins.includes(interaction.member.user.id) && !config.Staff.includes(interaction.member.user.id)) {
             embed = getTemplate()
             .setDescription(`You do not have permission to unban players!`)
             return interaction.editReply({ embeds: [embed]});
@@ -309,7 +316,7 @@ class commandManager {
         try {
             const response: UnbanningPlayerDelete = await (await axios.delete(`${DB_API}/BannedPlayers/Remove/${gamertagORxuid}`,{
                 headers: {
-                    "authorization": config.AuthKey
+                    "authorization": config.UnitedDBLoginStaff
                 }
             })).data
             embed = getTemplate()
