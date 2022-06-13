@@ -107,4 +107,4 @@ client.on('interactionCreate', async (interaction) => {
     }
 })
 
-client.login('OTg0MjA2MzU2MzM0NjU3NjQ2.GlbCPM.4rud0IjRCCmx0S_jSfSFQp8e4hrfCTxH8zhIK8')
+client.login(config.botToken)
