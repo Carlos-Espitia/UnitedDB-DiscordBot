@@ -33,14 +33,10 @@ function RegisterCommands() {
     //remove guildid for global cmds
     const guildId = ''; //'984207569386094612'
     const guild = index_1.client.guilds.cache.get(guildId);
-    let commands;
-    if (guild) {
-        commands = guild.commands;
-    }
-    else {
-        commands = (_a = index_1.client.application) === null || _a === void 0 ? void 0 : _a.commands;
-    }
-    commands === null || commands === void 0 ? void 0 : commands.create({
+    let commands = (guild === null || guild === void 0 ? void 0 : guild.commands) || ((_a = index_1.client.application) === null || _a === void 0 ? void 0 : _a.commands);
+    if (!commands)
+        return;
+    commands.create({
         name: 'db_lookup',
         description: 'Lookup banned player, provide gamertag or xuid.',
         options: [
@@ -58,7 +54,7 @@ function RegisterCommands() {
             }
         ]
     });
-    commands === null || commands === void 0 ? void 0 : commands.create({
+    commands.create({
         name: 'db_ban_player',
         description: 'Ban player',
         options: [
@@ -88,7 +84,7 @@ function RegisterCommands() {
             }
         ]
     });
-    commands === null || commands === void 0 ? void 0 : commands.create({
+    commands.create({
         name: 'db_unban_player',
         description: 'Unban player',
         options: [
@@ -106,7 +102,7 @@ function RegisterCommands() {
             }
         ]
     });
-    commands === null || commands === void 0 ? void 0 : commands.create({
+    commands.create({
         name: 'db_request_ban',
         description: 'Request to ban a player',
         options: [
@@ -136,11 +132,11 @@ function RegisterCommands() {
             },
         ]
     });
-    commands === null || commands === void 0 ? void 0 : commands.create({
+    commands.create({
         name: 'invite',
         description: 'Invite bot to discord'
     });
-    commands === null || commands === void 0 ? void 0 : commands.create({
+    commands.create({
         name: 'info',
         description: 'DB and bot information'
     });
@@ -185,24 +181,18 @@ class commandManager {
         const loading = (0, utils_1.getTemplate)()
             .setDescription('Fetching user...');
         await interaction.reply({ embeds: [loading], ephemeral: true });
-        var gamertag = interaction.options.getString('gamertag');
-        var xuid = interaction.options.getString('xuid');
-        var embed;
+        const gamertag = interaction.options.getString('gamertag');
+        const xuid = interaction.options.getString('xuid');
+        const embed = (0, utils_1.getTemplate)();
         if (!gamertag && !xuid) {
-            embed = (0, utils_1.getTemplate)()
+            embed
                 .setDescription(`You must provide a gamertag or xuid!`);
             return interaction.editReply({ embeds: [embed] });
         }
-        var gamertagORxuid;
-        if (xuid) {
-            gamertagORxuid = xuid;
-        }
-        else {
-            gamertagORxuid = gamertag;
-        }
+        const gamertagORxuid = xuid || gamertag;
         try {
             const playerInfo = await (await axios_1.default.get(`${index_1.DB_API}/BannedPlayers/LookUp/${gamertagORxuid}`)).data;
-            embed = (0, utils_1.getTemplate)()
+            embed
                 .setDescription(`` +
                 `\n**xuid**: ${playerInfo.xuid}` +
                 `\n**gamertag**: ${playerInfo.gamertag}` +
@@ -213,7 +203,7 @@ class commandManager {
             return interaction.editReply({ embeds: [embed] });
         }
         catch (err) {
-            embed = (0, utils_1.getTemplate)().setDescription(err.response.data);
+            embed.setDescription(err.response.data);
             return interaction.editReply({ embeds: [embed] });
         }
     }
@@ -223,28 +213,22 @@ class commandManager {
         const loading = (0, utils_1.getTemplate)()
             .setDescription('Checking for authorization...');
         await interaction.reply({ embeds: [loading], ephemeral: true });
-        var gamertag = interaction.options.getString('gamertag');
-        var xuid = interaction.options.getString('xuid');
-        var reason = interaction.options.getString('reason');
-        var proof = interaction.options.getString('proof');
-        var embed;
+        const gamertag = interaction.options.getString('gamertag');
+        const xuid = interaction.options.getString('xuid');
+        const reason = interaction.options.getString('reason');
+        const proof = interaction.options.getString('proof');
+        const embed = (0, utils_1.getTemplate)();
         if (!config_1.config.Admins.includes(interaction.member.user.id) && !config_1.config.Staff.includes(interaction.member.user.id)) {
-            embed = (0, utils_1.getTemplate)()
+            embed
                 .setDescription(`You do not have permission to ban players!`);
             return interaction.editReply({ embeds: [embed] });
         }
         if (!gamertag && !xuid) {
-            embed = (0, utils_1.getTemplate)()
+            embed
                 .setDescription(`You must provide a gamertag or xuid!`);
             return interaction.editReply({ embeds: [embed] });
         }
-        var gamertagORxuid;
-        if (xuid) {
-            gamertagORxuid = xuid;
-        }
-        else {
-            gamertagORxuid = gamertag;
-        }
+        const gamertagORxuid = xuid || gamertag;
         //auth filter
         if (!config_1.config.Admins.includes(interaction.member.user.id)) {
             try {
@@ -257,7 +241,7 @@ class commandManager {
                         "authorization": config_1.config.UnitedDBLoginStaff
                     }
                 })).data;
-                embed = (0, utils_1.getTemplate)()
+                embed
                     .setDescription(`` +
                     `\n${response.message}` +
                     `\n**Xuid**: ${response.xuid}` +
@@ -269,7 +253,7 @@ class commandManager {
                 return interaction.editReply({ embeds: [embed] });
             }
             catch (err) {
-                embed = (0, utils_1.getTemplate)()
+                embed
                     .setDescription(err.response.data);
                 return interaction.editReply({ embeds: [embed] });
             }
@@ -284,7 +268,7 @@ class commandManager {
                     "authorization": config_1.config.UnitedDBLoginAdmin
                 }
             })).data;
-            embed = (0, utils_1.getTemplate)()
+            embed
                 .setDescription(`` +
                 `\n${response.message}` +
                 `\n**Xuid**: ${response.xuid}` +
@@ -296,7 +280,7 @@ class commandManager {
             return interaction.editReply({ embeds: [embed] });
         }
         catch (err) {
-            embed = (0, utils_1.getTemplate)()
+            embed
                 .setDescription(err.response.data);
             return interaction.editReply({ embeds: [embed] });
         }
@@ -307,33 +291,27 @@ class commandManager {
         const loading = (0, utils_1.getTemplate)()
             .setDescription('Checking for authorization...');
         await interaction.reply({ embeds: [loading], ephemeral: true });
-        var gamertag = interaction.options.getString('gamertag');
-        var xuid = interaction.options.getString('xuid');
-        var embed;
+        const gamertag = interaction.options.getString('gamertag');
+        const xuid = interaction.options.getString('xuid');
+        const embed = (0, utils_1.getTemplate)();
         if (!config_1.config.Admins.includes(interaction.member.user.id)) {
-            embed = (0, utils_1.getTemplate)()
+            embed
                 .setDescription(`You do not have permission to unban players!`);
             return interaction.editReply({ embeds: [embed] });
         }
         if (!gamertag && !xuid) {
-            embed = (0, utils_1.getTemplate)()
+            embed
                 .setDescription(`You must provide a gamertag or xuid!`);
             return interaction.editReply({ embeds: [embed] });
         }
-        var gamertagORxuid;
-        if (xuid) {
-            gamertagORxuid = xuid;
-        }
-        else {
-            gamertagORxuid = gamertag;
-        }
+        const gamertagORxuid = xuid || gamertag;
         try {
             const response = await (await axios_1.default.delete(`${index_1.DB_API}/BannedPlayers/Remove/${gamertagORxuid}`, {
                 headers: {
                     "authorization": config_1.config.UnitedDBLoginAdmin
                 }
             })).data;
-            embed = (0, utils_1.getTemplate)()
+            embed
                 .setDescription(`` +
                 `\n${response.message}` +
                 `\n**Xuid**: ${response.xuid}` +
@@ -341,7 +319,7 @@ class commandManager {
             return interaction.editReply({ embeds: [embed] });
         }
         catch (err) {
-            embed = (0, utils_1.getTemplate)()
+            embed
                 .setDescription(err.response.data);
             return interaction.editReply({ embeds: [embed] });
         }
@@ -366,13 +344,7 @@ class commandManager {
                 .setDescription(`You must provide a gamertag or xuid!`);
             return interaction.editReply({ embeds: [embed] });
         }
-        var gamertagORxuid;
-        if (xuid) {
-            gamertagORxuid = xuid;
-        }
-        else {
-            gamertagORxuid = gamertag;
-        }
+        const gamertagORxuid = xuid || gamertag;
         try {
             await (await axios_1.default.get(`${index_1.DB_API}/BannedPlayers/LookUp/${gamertagORxuid}`)).data; //check if player is in db
             embed = (0, utils_1.getTemplate)().setDescription(`Player is already databased banned.`);

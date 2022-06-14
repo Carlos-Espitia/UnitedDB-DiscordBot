@@ -30,7 +30,9 @@ async function getXuidByGamertag(xbl, gamertag) {
             XSTSToken: xbl.XSTSToken
         }));
     }
-    catch (_a) { }
+    catch (err) {
+        console.error(err);
+    }
 }
 exports.getXuidByGamertag = getXuidByGamertag;
 async function getGamertagByXuid(xbl, xuid) {
@@ -57,10 +59,11 @@ async function validateXuid(xbl, xuid) {
     }
     catch (err) {
         console.log(err);
-    }
-    if (!xboxData)
         return false;
+    }
     if (xboxData)
+        return true;
+    else
         return true;
 }
 exports.validateXuid = validateXuid;
@@ -72,10 +75,12 @@ async function validateGamertag(xbl, gamertag) {
             XSTSToken: xbl.XSTSToken
         });
     }
-    catch (_a) { }
-    if (!validGamertag)
-        return false;
+    catch (err) {
+        console.error(err);
+    }
     if (validGamertag)
+        return true;
+    else
         return true;
 }
 exports.validateGamertag = validateGamertag;

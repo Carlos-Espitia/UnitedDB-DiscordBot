@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UnbanningPlayerDelete = exports.BanningPlayerPost = exports.BannedPlayerInfo = exports.DB_API = exports.auth = exports.client = void 0;
+exports.DB_API = exports.auth = exports.client = void 0;
 const discord_js_1 = __importStar(require("discord.js"));
 exports.client = new discord_js_1.default.Client({ intents: [discord_js_1.Intents.FLAGS.GUILDS, discord_js_1.Intents.FLAGS.GUILD_MESSAGES, discord_js_1.Intents.FLAGS.DIRECT_MESSAGES] });
 const discord_modals_1 = require("discord-modals");
@@ -37,22 +37,6 @@ exports.client.once('ready', () => {
     console.log('bot is online!');
     (0, commands_1.RegisterCommands)();
 });
-// TYPES ////////////////////////////
-class BannedPlayerInfo {
-}
-exports.BannedPlayerInfo = BannedPlayerInfo;
-class BanningPlayerPost {
-}
-exports.BanningPlayerPost = BanningPlayerPost;
-class UnbanningPlayerDelete {
-}
-exports.UnbanningPlayerDelete = UnbanningPlayerDelete;
-// TYPES ////////////////////////////
-class buttonManager {
-}
-const BMAN = new buttonManager();
-//////////////////////////////////////
-//////////////////////////////////////
 exports.client.on('interactionCreate', async (interaction) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
     if (interaction.isModalSubmit()) {
@@ -66,7 +50,8 @@ exports.client.on('interactionCreate', async (interaction) => {
             // ( client.channels.cache.get(config.LogChannel) as TextChannel ).send({embeds: [declinedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch()
             //notify reporter
             const id = (_b = (_a = interaction.message) === null || _a === void 0 ? void 0 : _a.embeds[0].description) === null || _b === void 0 ? void 0 : _b.split('ID: ')[1].split('\n')[0].trim();
-            const declinedReport = (0, utils_1.getTemplate)().setDescription(`${interaction.user.username} has declined the report. Reason: ${reason_Input}`);
+            const declinedReport = (0, utils_1.getTemplate)()
+                .setDescription(`${interaction.user.username} has declined the report. Reason: ${reason_Input}`);
             //@ts-ignore // .delete() is not included in the discord js types
             interaction.reply({ embeds: [declinedReport] }).then(msg => { setTimeout(() => msg.delete(), 7000); }).catch();
             if (!id)
@@ -116,17 +101,22 @@ exports.client.on('interactionCreate', async (interaction) => {
                     `\n**Proof**: ${response.proof}` +
                     `\n**Banned by**: ${response.bannedBy}` +
                     `\n**Date**: <t:${(Date.now() / 1000).toString().split('.')[0]}:F>`);
-                //@ts-ignore
-                interaction.editReply({ embeds: [embed] }).then(msg => { setTimeout(() => msg.delete(), 7000); }).catch();
+                interaction.editReply({ embeds: [embed] }).then(msg => {
+                    //@ts-ignore
+                    setTimeout(() => msg.delete(), 7000);
+                }).catch();
             }
             catch (err) {
                 const embed = (0, utils_1.getTemplate)()
                     .setDescription(err.response.data);
-                //@ts-ignore
-                return interaction.editReply({ embeds: [embed] }).then(msg => { setTimeout(() => msg.delete(), 7000); }).catch();
+                return interaction.editReply({ embeds: [embed] }).then(msg => {
+                    //@ts-ignore
+                    setTimeout(() => msg.delete(), 7000);
+                }).catch();
             }
             const id = (_k = (_j = interaction.message) === null || _j === void 0 ? void 0 : _j.embeds[0].description) === null || _k === void 0 ? void 0 : _k.split('ID: ')[1].split('\n')[0].trim();
-            const acceptedReport = (0, utils_1.getTemplate)().setDescription(`${interaction.user.username} has accepted the report.`);
+            const acceptedReport = (0, utils_1.getTemplate)()
+                .setDescription(`${interaction.user.username} has accepted the report.`);
             if (!id)
                 return; // not supposed to be undefined 
             const user = await exports.client.users.fetch(id).catch();
