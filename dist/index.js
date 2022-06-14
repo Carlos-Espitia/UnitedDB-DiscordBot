@@ -41,19 +41,19 @@ exports.client.on('interactionCreate', async (interaction) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
     if (interaction.isModalSubmit()) {
         if (interaction.customId === 'Request_Decline_Modal') {
-            const reason_Input = interaction.components[0].components[0].value;
+            var reason_Input = interaction.components[0].components[0].value;
             //@ts-ignore // .delete() is not included in the discord js types
             try {
                 interaction.message.delete();
             }
             catch (_l) { }
-            // ( client.channels.cache.get(config.LogChannel) as TextChannel ).send({embeds: [declinedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch()
             //notify reporter
-            const id = (_b = (_a = interaction.message) === null || _a === void 0 ? void 0 : _a.embeds[0].description) === null || _b === void 0 ? void 0 : _b.split('ID: ')[1].split('\n')[0].trim();
-            const declinedReport = (0, utils_1.getTemplate)()
+            var id = (_b = (_a = interaction.message) === null || _a === void 0 ? void 0 : _a.embeds[0].description) === null || _b === void 0 ? void 0 : _b.split('ID: ')[1].split('\n')[0].trim();
+            var declinedReport = (0, utils_1.getTemplate)()
                 .setDescription(`${interaction.user.username} has declined the report. Reason: ${reason_Input}`);
             //@ts-ignore // .delete() is not included in the discord js types
-            interaction.reply({ embeds: [declinedReport] }).then(msg => { setTimeout(() => msg.delete(), 7000); }).catch();
+            // interaction.reply({ embeds: [declinedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
+            exports.client.channels.cache.get(config_1.config.LogChannel).send({ embeds: [declinedReport] }).then(msg => { setTimeout(() => msg.delete(), 7000); }).catch();
             if (!id)
                 return; // not supposed to be undefined 
             const user = await exports.client.users.fetch(id).catch();
@@ -74,12 +74,12 @@ exports.client.on('interactionCreate', async (interaction) => {
             // interaction.reply({ embeds: [acceptedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
             // ( client.channels.cache.get(config.LogChannel) as TextChannel ).send({embeds: [acceptedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch()
             // console.log(interaction.message?.embeds[0].description)
-            const xuid = (_d = (_c = interaction.message) === null || _c === void 0 ? void 0 : _c.embeds[0].description) === null || _d === void 0 ? void 0 : _d.split('**Xuid**: ')[1].split('\n')[0].trim();
-            const reason = (_f = (_e = interaction.message) === null || _e === void 0 ? void 0 : _e.embeds[0].description) === null || _f === void 0 ? void 0 : _f.split('**Reason**: ')[1].split('\n')[0].trim();
-            const proof = (_h = (_g = interaction.message) === null || _g === void 0 ? void 0 : _g.embeds[0].description) === null || _h === void 0 ? void 0 : _h.split('**Proof**: ')[1].split('\n')[0].trim();
+            var xuid = (_d = (_c = interaction.message) === null || _c === void 0 ? void 0 : _c.embeds[0].description) === null || _d === void 0 ? void 0 : _d.split('**Xuid**: ')[1].split('\n')[0].trim();
+            var reason = (_f = (_e = interaction.message) === null || _e === void 0 ? void 0 : _e.embeds[0].description) === null || _f === void 0 ? void 0 : _f.split('**Reason**: ')[1].split('\n')[0].trim();
+            var proof = (_h = (_g = interaction.message) === null || _g === void 0 ? void 0 : _g.embeds[0].description) === null || _h === void 0 ? void 0 : _h.split('**Proof**: ')[1].split('\n')[0].trim();
             if (!interaction.member)
                 return; // not supposed to be undefined 
-            const loading = (0, utils_1.getTemplate)()
+            var loading = (0, utils_1.getTemplate)()
                 .setDescription('Checking for authorization...');
             await interaction.reply({ embeds: [loading] });
             try {
@@ -152,6 +152,8 @@ exports.client.on('interactionCreate', async (interaction) => {
             commands_1.CMDMAN.invite(interaction);
         if (interaction.commandName === 'info')
             commands_1.CMDMAN.info(interaction);
+        if (interaction.commandName === 'help')
+            commands_1.CMDMAN.help(interaction);
     }
 });
 exports.client.login(config_1.config.botToken);

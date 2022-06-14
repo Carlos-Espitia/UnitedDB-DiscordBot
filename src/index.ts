@@ -1,4 +1,4 @@
-import Discord, { Intents } from "discord.js";
+import Discord, { Intents, TextChannel } from "discord.js";
 export const client = new Discord.Client({ intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES ] });
 import { Modal, TextInputComponent, showModal } from "discord-modals";
 import { config } from './config'
@@ -19,20 +19,19 @@ client.once('ready', () => {
 client.on('interactionCreate', async (interaction) => {
     if(interaction.isModalSubmit()) {
         if(interaction.customId === 'Request_Decline_Modal') {
-            const reason_Input = interaction.components[0].components[0].value
+            var reason_Input = interaction.components[0].components[0].value
 
             //@ts-ignore // .delete() is not included in the discord js types
             try{interaction.message.delete()} catch {}
 
-            // ( client.channels.cache.get(config.LogChannel) as TextChannel ).send({embeds: [declinedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch()
-
             //notify reporter
-            const id = interaction.message?.embeds[0].description?.split('ID: ')[1].split('\n')[0].trim()
-            const declinedReport = getTemplate()
+            var id = interaction.message?.embeds[0].description?.split('ID: ')[1].split('\n')[0].trim()
+            var declinedReport = getTemplate()
             .setDescription(`${interaction.user.username} has declined the report. Reason: ${reason_Input}`);
 
             //@ts-ignore // .delete() is not included in the discord js types
-            interaction.reply({ embeds: [declinedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
+            // interaction.reply({ embeds: [declinedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
+            ( client.channels.cache.get(config.LogChannel) as TextChannel ).send({embeds: [declinedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
             if(!id) return // not supposed to be undefined 
             const user = await client.users.fetch(id).catch();
             user.send({ embeds: [ declinedReport ] }).catch(); // might change msg later
@@ -55,13 +54,13 @@ client.on('interactionCreate', async (interaction) => {
 
             // console.log(interaction.message?.embeds[0].description)
 
-            const xuid = interaction.message?.embeds[0].description?.split('**Xuid**: ')[1].split('\n')[0].trim()
-            const reason = interaction.message?.embeds[0].description?.split('**Reason**: ')[1].split('\n')[0].trim()
-            const proof = interaction.message?.embeds[0].description?.split('**Proof**: ')[1].split('\n')[0].trim()
+            var xuid = interaction.message?.embeds[0].description?.split('**Xuid**: ')[1].split('\n')[0].trim()
+            var reason = interaction.message?.embeds[0].description?.split('**Reason**: ')[1].split('\n')[0].trim()
+            var proof = interaction.message?.embeds[0].description?.split('**Proof**: ')[1].split('\n')[0].trim()
 
             if(!interaction.member) return // not supposed to be undefined 
 
-            const loading = getTemplate()
+            var loading = getTemplate()
             .setDescription('Checking for authorization...')
             await interaction.reply({embeds: [loading]})
 
@@ -133,6 +132,7 @@ client.on('interactionCreate', async (interaction) => {
         if (interaction.commandName === 'db_request_ban') CMDMAN.requestBanPlayer(interaction)
         if (interaction.commandName === 'invite') CMDMAN.invite(interaction)
         if (interaction.commandName === 'info') CMDMAN.info(interaction)
+        if (interaction.commandName === 'help') CMDMAN.help(interaction)
     }
 })
 

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.config = void 0;
 exports.config = {
-    LogChannel: '984648891809009705',
+    LogChannel: '959136976244732004',
     Staff: [
         '421053214230708225', //carlos
     ],

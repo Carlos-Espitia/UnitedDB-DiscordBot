@@ -28,17 +28,10 @@ const discord_js_1 = __importStar(require("discord.js"));
 const config_1 = require("./config");
 const utils_1 = require("./utils");
 const axios_1 = __importDefault(require("axios"));
-function RegisterCommands() {
-    var _a;
-    //remove guildid for global cmds
-    const guildId = ''; //'984207569386094612'
-    const guild = index_1.client.guilds.cache.get(guildId);
-    let commands = (guild === null || guild === void 0 ? void 0 : guild.commands) || ((_a = index_1.client.application) === null || _a === void 0 ? void 0 : _a.commands);
-    if (!commands)
-        return;
-    commands.create({
+const registerCommands = [
+    {
         name: 'db_lookup',
-        description: 'Lookup banned player, provide gamertag or xuid.',
+        description: 'Lookup banned player, provide gamertag or xuid',
         options: [
             {
                 name: 'gamertag',
@@ -53,8 +46,8 @@ function RegisterCommands() {
                 type: discord_js_1.default.Constants.ApplicationCommandOptionTypes.STRING
             }
         ]
-    });
-    commands.create({
+    },
+    {
         name: 'db_ban_player',
         description: 'Ban player',
         options: [
@@ -83,8 +76,8 @@ function RegisterCommands() {
                 type: discord_js_1.default.Constants.ApplicationCommandOptionTypes.STRING
             }
         ]
-    });
-    commands.create({
+    },
+    {
         name: 'db_unban_player',
         description: 'Unban player',
         options: [
@@ -101,8 +94,8 @@ function RegisterCommands() {
                 type: discord_js_1.default.Constants.ApplicationCommandOptionTypes.STRING
             }
         ]
-    });
-    commands.create({
+    },
+    {
         name: 'db_request_ban',
         description: 'Request to ban a player',
         options: [
@@ -131,15 +124,31 @@ function RegisterCommands() {
                 type: discord_js_1.default.Constants.ApplicationCommandOptionTypes.STRING
             },
         ]
-    });
-    commands.create({
+    },
+    {
         name: 'invite',
         description: 'Invite bot to discord'
-    });
-    commands.create({
+    },
+    {
         name: 'info',
         description: 'DB and bot information'
-    });
+    },
+    {
+        name: 'help',
+        description: 'Shows all UnitedDB commands'
+    },
+];
+function RegisterCommands() {
+    var _a;
+    //remove guildid for global cmds
+    const guildId = ''; //'984207569386094612'
+    const guild = index_1.client.guilds.cache.get(guildId);
+    let commands = (guild === null || guild === void 0 ? void 0 : guild.commands) || ((_a = index_1.client.application) === null || _a === void 0 ? void 0 : _a.commands);
+    if (!commands)
+        return;
+    //@ts-ignore
+    for (var command of registerCommands)
+        commands.create(command);
 }
 exports.RegisterCommands = RegisterCommands;
 /////////////////////////////////////////////////////////////////////////////////////
@@ -154,7 +163,7 @@ class commandManager {
         try {
             const bannedPlayers = await (await axios_1.default.get(`${index_1.DB_API}/BannedPlayers`, {
                 headers: {
-                    "authorization": config_1.config.UnitedDBLoginStaff
+                    "authorization": config_1.config.UnitedDBLoginAdmin
                 }
             })).data;
             embed = (0, utils_1.getTemplate)()
@@ -408,6 +417,17 @@ class commandManager {
             `\n**Proof**: ${proof}` +
             `\n**Date**: <t:${(Date.now() / 1000).toString().split('.')[0]}:F>`);
         return interaction.editReply({ embeds: [embed] });
+    }
+    async help(interaction) {
+        if (!interaction.member)
+            return;
+        var cmdlist = ``;
+        for (var command of registerCommands) {
+            cmdlist += `**/${command.name}**\n${command.description}\n`;
+        }
+        const embed = (0, utils_1.getTemplate)()
+            .setDescription(cmdlist);
+        await interaction.reply({ embeds: [embed], ephemeral: true });
     }
 }
 exports.CMDMAN = new commandManager();

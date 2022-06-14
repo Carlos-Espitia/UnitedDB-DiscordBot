@@ -6,18 +6,10 @@ import { getGamertagByXuid, getTemplate, getXuidByGamertag, isValidUrl, validate
 import axios from 'axios';
 
     
-export function RegisterCommands() {
-    //remove guildid for global cmds
-    const guildId = '' //'984207569386094612'
-    const guild = client.guilds.cache.get(guildId)
-
-    let commands = guild?.commands || client.application?.commands
-
-    if(!commands) return;
-
-    commands.create({
+const registerCommands = [
+    {
         name: 'db_lookup',
-        description: 'Lookup banned player, provide gamertag or xuid.',
+        description: 'Lookup banned player, provide gamertag or xuid',
         options: [
             {
                 name: 'gamertag',
@@ -32,9 +24,8 @@ export function RegisterCommands() {
                 type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
             }
         ]
-    })
-
-    commands.create({
+    },
+    {
         name: 'db_ban_player',
         description: 'Ban player',
         options: [
@@ -63,9 +54,8 @@ export function RegisterCommands() {
                 type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
             }
         ]
-    })
-
-    commands.create({
+    },
+    {
         name: 'db_unban_player',
         description: 'Unban player',
         options: [
@@ -82,8 +72,8 @@ export function RegisterCommands() {
                 type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
             }
         ]
-    })
-    commands.create({
+    },
+    {
         name: 'db_request_ban',
         description: 'Request to ban a player',
         options: [
@@ -112,17 +102,32 @@ export function RegisterCommands() {
                 type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
             },
         ]
-    })
-
-    commands.create({
+    },
+    {
         name: 'invite',
         description: 'Invite bot to discord'
-    })
-
-    commands.create({
+    },
+    {
         name: 'info',
         description: 'DB and bot information'
-    })
+    },
+    {
+        name: 'help',
+        description: 'Shows all UnitedDB commands'
+    },
+]
+
+export function RegisterCommands() {
+    //remove guildid for global cmds
+    const guildId = '' //'984207569386094612'
+    const guild = client.guilds.cache.get(guildId)
+
+    let commands = guild?.commands || client.application?.commands
+
+    if(!commands) return;
+
+    //@ts-ignore
+    for(var command of registerCommands) commands.create(command)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -141,7 +146,7 @@ class commandManager {
         try {
             const bannedPlayers: object[] = await (await axios.get(`${DB_API}/BannedPlayers`, {
                 headers: {
-                    "authorization": config.UnitedDBLoginStaff
+                    "authorization": config.UnitedDBLoginAdmin
                 }
             })).data
 
@@ -422,6 +427,18 @@ class commandManager {
         `\n**Proof**: ${proof}`+
         `\n**Date**: <t:${(Date.now()/1000).toString().split('.')[0]}:F>`)
         return interaction.editReply({ embeds: [embed]});
+    }
+
+    async help(interaction: Discord.CommandInteraction<Discord.CacheType>) {
+        if(!interaction.member) return
+
+        var cmdlist = ``
+        for(var command of registerCommands) {
+            cmdlist += `**/${command.name}**\n${command.description}\n`
+        }
+        const embed = getTemplate()
+        .setDescription(cmdlist)
+        await interaction.reply({embeds: [embed], ephemeral: true })
     }
 }
 export const CMDMAN = new commandManager()
