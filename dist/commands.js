@@ -31,7 +31,7 @@ const axios_1 = __importDefault(require("axios"));
 function RegisterCommands() {
     var _a;
     //remove guildid for global cmds
-    const guildId = '984207569386094612';
+    const guildId = ''; //'984207569386094612'
     const guild = index_1.client.guilds.cache.get(guildId);
     let commands;
     if (guild) {
@@ -175,7 +175,7 @@ class commandManager {
             return;
         const inviteMsg = new discord_js_1.MessageEmbed()
             .setTitle('Click Here')
-            .setURL('https://discord.com/oauth2/authorize?client_id=984206356334657646&scope=bot&permissions=549755289087')
+            .setURL('https://discord.com/api/oauth2/authorize?client_id=958167252652421230&permissions=8&scope=bot%20applications.commands')
             .setDescription(`**Invite UnitedDB To Your Discord!**`);
         return await interaction.reply({ embeds: [inviteMsg] });
     }
@@ -276,6 +276,8 @@ class commandManager {
         }
         try {
             const response = await (await axios_1.default.post(`${index_1.DB_API}/BannedPlayers/Add/${gamertagORxuid}`, {
+                reason: reason,
+                proof: proof,
                 discordUser: `${interaction.member.user.username}#${interaction.member.user.discriminator}`
             }, {
                 headers: {

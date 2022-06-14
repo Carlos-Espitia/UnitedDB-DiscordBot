@@ -7,7 +7,7 @@ import axios from "axios";
     
 export function RegisterCommands() {
     //remove guildid for global cmds
-    const guildId = '984207569386094612'
+    const guildId = '' //'984207569386094612'
     const guild = client.guilds.cache.get(guildId)
 
     let commands
@@ -164,7 +164,7 @@ class commandManager {
 
         const inviteMsg = new MessageEmbed()
         .setTitle('Click Here')
-        .setURL('https://discord.com/oauth2/authorize?client_id=984206356334657646&scope=bot&permissions=549755289087')
+        .setURL('https://discord.com/api/oauth2/authorize?client_id=958167252652421230&permissions=8&scope=bot%20applications.commands') 
         .setDescription(`**Invite UnitedDB To Your Discord!**`)
         return await interaction.reply({embeds: [inviteMsg]})
     }
@@ -265,6 +265,8 @@ class commandManager {
 
         try {
             const response: BanningPlayerPost = await (await axios.post(`${DB_API}/BannedPlayers/Add/${gamertagORxuid}`, {
+                reason: reason, 
+                proof: proof,
                 discordUser: `${interaction.member.user.username}#${interaction.member.user.discriminator}`
             },{
                 headers: {
