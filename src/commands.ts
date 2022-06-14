@@ -1,8 +1,9 @@
-import { auth, BannedPlayerInfo, BanningPlayerPost, client, DB_API, UnbanningPlayerDelete } from "./index"
-import Discord, { Intents, MessageActionRow, MessageButton, MessageEmbed, TextChannel } from "discord.js";
-import { config } from "./config";
-import { getGamertagByXuid, getTemplate, getXuidByGamertag, isValidUrl, validateGamertag, validateXuid } from "./utils";
-import axios from "axios";
+import { auth, client, DB_API } from './index';
+import { BannedPlayerInfo, BanningPlayerPost, UnbanningPlayerDelete } from './types';
+import Discord, { Intents, MessageActionRow, MessageButton, MessageEmbed, TextChannel } from 'discord.js';
+import { config } from './config';
+import { getGamertagByXuid, getTemplate, getXuidByGamertag, isValidUrl, validateGamertag, validateXuid } from './utils';
+import axios from 'axios';
 
     
 export function RegisterCommands() {
@@ -10,48 +11,44 @@ export function RegisterCommands() {
     const guildId = '' //'984207569386094612'
     const guild = client.guilds.cache.get(guildId)
 
-    let commands
+    let commands = guild?.commands || client.application?.commands
 
-    if(guild) {
-        commands = guild.commands
-    } else {
-        commands = client.application?.commands
-    }
+    if(!commands) return;
 
-    commands?.create({
+    commands.create({
         name: 'db_lookup',
         description: 'Lookup banned player, provide gamertag or xuid.',
         options: [
             {
-            name: 'gamertag',
-            description: 'Provide a gamertag',
-            required: false,
-            type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
+                name: 'gamertag',
+                description: 'Provide a gamertag',
+                required: false,
+                type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
             },
             {
-            name: 'xuid',
-            description: 'Provide a xuid',
-            required: false,
-            type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
+                name: 'xuid',
+                description: 'Provide a xuid',
+                required: false,
+                type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
             }
         ]
     })
 
-    commands?.create({
+    commands.create({
         name: 'db_ban_player',
         description: 'Ban player',
         options: [
             {
-            name: 'gamertag',
+                name: 'gamertag',
             description: 'Provide a gamertag',
-            required: false,
-            type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
+                required: false,
+                type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
             },
             {
-            name: 'xuid',
-            description: 'Provide a xuid',
-            required: false,
-            type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
+                name: 'xuid',
+                description: 'Provide a xuid',
+                required: false,
+                type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
             },
             {
                 name: 'reason',
@@ -68,25 +65,25 @@ export function RegisterCommands() {
         ]
     })
 
-    commands?.create({
+    commands.create({
         name: 'db_unban_player',
         description: 'Unban player',
         options: [
             {
-            name: 'gamertag',
-            description: 'Provide a gamertag',
-            required: false,
-            type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
+                name: 'gamertag',
+                description: 'Provide a gamertag',
+                required: false,
+                type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
             },
             {
-            name: 'xuid',
-            description: 'Provide a xuid',
-            required: false,
-            type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
+                name: 'xuid',
+                description: 'Provide a xuid',
+                required: false,
+                type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
             }
         ]
     })
-    commands?.create({
+    commands.create({
         name: 'db_request_ban',
         description: 'Request to ban a player',
         options: [
@@ -103,26 +100,26 @@ export function RegisterCommands() {
                 type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
             },
             {
-            name: 'gamertag',
-            description: 'Provide a gamertag',
-            required: false,
-            type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
+                name: 'gamertag',
+                description: 'Provide a gamertag',
+                required: false,
+                type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
             },
             {
-            name: 'xuid',
-            description: 'Provide a xuid',
-            required: false,
-            type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
+                name: 'xuid',
+                description: 'Provide a xuid',
+                required: false,
+                type: Discord.Constants.ApplicationCommandOptionTypes.STRING 
             },
         ]
     })
 
-    commands?.create({
+    commands.create({
         name: 'invite',
         description: 'Invite bot to discord'
     })
 
-    commands?.create({
+    commands.create({
         name: 'info',
         description: 'DB and bot information'
     })
@@ -176,22 +173,21 @@ class commandManager {
         .setDescription('Fetching user...')
         await interaction.reply({embeds: [loading], ephemeral: true })
 
-        var gamertag = interaction.options.getString('gamertag')
-        var xuid = interaction.options.getString('xuid')
-        var embed;
+        const gamertag = interaction.options.getString('gamertag')
+        const xuid = interaction.options.getString('xuid')
+        const embed = getTemplate();
 
         if(!gamertag && !xuid) {
-            embed = getTemplate()
+            embed
             .setDescription(`You must provide a gamertag or xuid!`)
-            return interaction.editReply({ embeds: [embed]});
+            return interaction.editReply({ embeds: [embed] });
         }
 
-        var gamertagORxuid;
-        if(xuid) { gamertagORxuid = xuid } else { gamertagORxuid = gamertag }
+        const gamertagORxuid = xuid || gamertag;
 
         try {
             const playerInfo: BannedPlayerInfo = await (await axios.get(`${DB_API}/BannedPlayers/LookUp/${gamertagORxuid}`)).data
-            embed = getTemplate()
+            embed
                 .setDescription(``+
                 `\n**xuid**: ${playerInfo.xuid}`+
                 `\n**gamertag**: ${playerInfo.gamertag}`+
@@ -202,7 +198,7 @@ class commandManager {
 
             return interaction.editReply({ embeds: [embed]});
         } catch (err: any) {
-                embed = getTemplate().setDescription(err.response.data)
+                embed.setDescription(err.response.data)
             return interaction.editReply({ embeds: [embed]});
         }
     }
@@ -213,26 +209,25 @@ class commandManager {
         .setDescription('Checking for authorization...')
         await interaction.reply({embeds: [loading], ephemeral: true })
 
-        var gamertag = interaction.options.getString('gamertag')
-        var xuid = interaction.options.getString('xuid')
-        var reason = interaction.options.getString('reason')
-        var proof = interaction.options.getString('proof')
+        const gamertag = interaction.options.getString('gamertag')
+        const xuid = interaction.options.getString('xuid')
+        const reason = interaction.options.getString('reason')
+        const proof = interaction.options.getString('proof')
 
-        var embed;
+        const embed = getTemplate();
         if(!config.Admins.includes(interaction.member.user.id) && !config.Staff.includes(interaction.member.user.id)) {
-            embed = getTemplate()
+            embed
             .setDescription(`You do not have permission to ban players!`)
             return interaction.editReply({ embeds: [embed]});
         }
 
         if(!gamertag && !xuid) {
-            embed = getTemplate()
+            embed
             .setDescription(`You must provide a gamertag or xuid!`)
-            return interaction.editReply({ embeds: [embed]});
+            return interaction.editReply({ embeds: [embed] });
         }
 
-        var gamertagORxuid;
-        if(xuid) { gamertagORxuid = xuid } else { gamertagORxuid = gamertag }
+        const gamertagORxuid = xuid || gamertag;
         
         //auth filter
         if(!config.Admins.includes(interaction.member.user.id)) {
@@ -246,7 +241,7 @@ class commandManager {
                         "authorization": config.UnitedDBLoginStaff
                     }
                 })).data
-                embed = getTemplate()
+                embed
                 .setDescription(``+
                 `\n${response.message}`+
                 `\n**Xuid**: ${response.xuid}`+
@@ -255,11 +250,11 @@ class commandManager {
                 `\n**Proof**: ${response.proof}`+
                 `\n**Banned by**: ${response.bannedBy}`+
                 `\n**Date**: <t:${(Date.now()/1000).toString().split('.')[0]}:F>`)
-                return interaction.editReply({ embeds: [embed]});
+                return interaction.editReply({ embeds: [embed] });
             } catch (err: any) {
-                embed = getTemplate()
+                embed
                 .setDescription(err.response.data)
-                return interaction.editReply({ embeds: [embed]});
+                return interaction.editReply({ embeds: [embed] });
             }
         }
 
@@ -268,12 +263,12 @@ class commandManager {
                 reason: reason, 
                 proof: proof,
                 discordUser: `${interaction.member.user.username}#${interaction.member.user.discriminator}`
-            },{
+            }, {
                 headers: {
                     "authorization": config.UnitedDBLoginAdmin
                 }
             })).data
-            embed = getTemplate()
+            embed
             .setDescription(``+
             `\n${response.message}`+
             `\n**Xuid**: ${response.xuid}`+
@@ -282,38 +277,37 @@ class commandManager {
             `\n**Proof**: ${response.proof}`+
             `\n**Banned by**: ${response.bannedBy}`+
             `\n**Date**: <t:${(Date.now()/1000).toString().split('.')[0]}:F>`)
-            return interaction.editReply({ embeds: [embed]});
+            return interaction.editReply({ embeds: [embed] });
         } catch (err: any) {
-            embed = getTemplate()
+            embed
             .setDescription(err.response.data)
-            return interaction.editReply({ embeds: [embed]});
+            return interaction.editReply({ embeds: [embed] });
         }
     }
     async unbanPlayer(interaction: Discord.CommandInteraction<Discord.CacheType>) {
         if(!interaction.member) return
         const loading = getTemplate()
         .setDescription('Checking for authorization...')
-        await interaction.reply({embeds: [loading], ephemeral: true })
+        await interaction.reply({ embeds: [loading], ephemeral: true })
 
-        var gamertag = interaction.options.getString('gamertag')
-        var xuid = interaction.options.getString('xuid')
+        const gamertag = interaction.options.getString('gamertag')
+        const xuid = interaction.options.getString('xuid')
 
-        var embed;
+        const embed = getTemplate();
 
         if(!config.Admins.includes(interaction.member.user.id)) {
-            embed = getTemplate()
+            embed
             .setDescription(`You do not have permission to unban players!`)
             return interaction.editReply({ embeds: [embed]});
         }
 
         if(!gamertag && !xuid) {
-            embed = getTemplate()
+            embed
             .setDescription(`You must provide a gamertag or xuid!`)
             return interaction.editReply({ embeds: [embed]});
         }
 
-        var gamertagORxuid;
-        if(xuid) { gamertagORxuid = xuid } else { gamertagORxuid = gamertag }
+        const gamertagORxuid = xuid || gamertag;
 
         try {
             const response: UnbanningPlayerDelete = await (await axios.delete(`${DB_API}/BannedPlayers/Remove/${gamertagORxuid}`,{
@@ -321,16 +315,16 @@ class commandManager {
                     "authorization": config.UnitedDBLoginAdmin
                 }
             })).data
-            embed = getTemplate()
+            embed
             .setDescription(``+
             `\n${response.message}`+
             `\n**Xuid**: ${response.xuid}`+
             `\n**Gamertag**: ${response.gamertag}`)
-            return interaction.editReply({ embeds: [embed]});
+            return interaction.editReply({ embeds: [embed] });
         } catch (err: any) {
-            embed = getTemplate()
+            embed
             .setDescription(err.response.data)
-            return interaction.editReply({ embeds: [embed]});
+            return interaction.editReply({ embeds: [embed] });
         }
     }
 
@@ -355,8 +349,7 @@ class commandManager {
             return interaction.editReply({ embeds: [embed]});
         }
 
-        var gamertagORxuid;
-        if(xuid) { gamertagORxuid = xuid } else { gamertagORxuid = gamertag }
+        const gamertagORxuid = xuid || gamertag;
 
         try{
             await (await axios.get(`${DB_API}/BannedPlayers/LookUp/${gamertagORxuid}`)).data //check if player is in db

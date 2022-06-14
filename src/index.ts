@@ -1,4 +1,4 @@
-import Discord, {Intents, MessageActionRow, MessageButton, MessageEmbed, TextChannel } from "discord.js";
+import Discord, { Intents } from "discord.js";
 export const client = new Discord.Client({ intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES ] });
 import { Modal, TextInputComponent, showModal } from "discord-modals";
 import { config } from './config'
@@ -6,48 +6,15 @@ import { Authflow } from 'prismarine-auth';
 import { CMDMAN, RegisterCommands } from "./commands";
 import { getTemplate } from "./utils";
 import axios from "axios";
-export const auth = new Authflow(`QSMX`, `./auth`, {})
+import { BanningPlayerPost } from "./types";
 
+export const auth = new Authflow(`QSMX`, `./auth`, {})
 export const DB_API = 'http://localhost:5000'
 
 client.once('ready', () => {
     console.log('bot is online!')
     RegisterCommands()
 })
-
-// TYPES ////////////////////////////
-export class BannedPlayerInfo {
-    xuid: number | undefined
-    gamertag: string | undefined
-    reason: string | undefined
-    proof: string | undefined
-    bannedBy: string | undefined
-    date: string | undefined
-}
-export class BanningPlayerPost {
-    message: string | undefined
-    xuid: number | undefined
-    gamertag: string | undefined
-    reason: string | undefined
-    proof: string | undefined
-    bannedBy: string | undefined
-    date: string | undefined
-}
-export class UnbanningPlayerDelete {
-    message: string | undefined
-    xuid: number | undefined
-    gamertag: string | undefined
-}
-// TYPES ////////////////////////////
-
-class buttonManager {
-
-}
-
-const BMAN = new buttonManager()
-
-//////////////////////////////////////
-//////////////////////////////////////
 
 client.on('interactionCreate', async (interaction) => {
     if(interaction.isModalSubmit()) {
@@ -61,7 +28,8 @@ client.on('interactionCreate', async (interaction) => {
 
             //notify reporter
             const id = interaction.message?.embeds[0].description?.split('ID: ')[1].split('\n')[0].trim()
-            const declinedReport = getTemplate().setDescription(`${interaction.user.username} has declined the report. Reason: ${reason_Input}`);
+            const declinedReport = getTemplate()
+            .setDescription(`${interaction.user.username} has declined the report. Reason: ${reason_Input}`);
 
             //@ts-ignore // .delete() is not included in the discord js types
             interaction.reply({ embeds: [declinedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
@@ -116,17 +84,22 @@ client.on('interactionCreate', async (interaction) => {
                 `\n**Proof**: ${response.proof}`+
                 `\n**Banned by**: ${response.bannedBy}`+
                 `\n**Date**: <t:${(Date.now()/1000).toString().split('.')[0]}:F>`)
-                //@ts-ignore
-                interaction.editReply({ embeds: [embed]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
+                interaction.editReply({ embeds: [embed]}).then(msg => {
+                    //@ts-ignore
+                    setTimeout(() => msg.delete(), 7000)
+                }).catch();
             } catch (err: any) {
                 const embed = getTemplate()
                 .setDescription(err.response.data)
-                //@ts-ignore
-                return interaction.editReply({ embeds: [embed]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
+                return interaction.editReply({ embeds: [embed]}).then(msg => {
+                    //@ts-ignore
+                    setTimeout(() => msg.delete(), 7000)
+                }).catch();
             }
 
             const id = interaction.message?.embeds[0].description?.split('ID: ')[1].split('\n')[0].trim();
-            const acceptedReport = getTemplate().setDescription(`${interaction.user.username} has accepted the report.`);
+            const acceptedReport = getTemplate()
+            .setDescription(`${interaction.user.username} has accepted the report.`);
 
             if(!id) return // not supposed to be undefined 
             const user = await client.users.fetch(id).catch();
@@ -160,7 +133,6 @@ client.on('interactionCreate', async (interaction) => {
         if (interaction.commandName === 'db_request_ban') CMDMAN.requestBanPlayer(interaction)
         if (interaction.commandName === 'invite') CMDMAN.invite(interaction)
         if (interaction.commandName === 'info') CMDMAN.info(interaction)
-
     }
 })
 
