@@ -54,7 +54,7 @@ export async function validateGamertag(xbl: any, gamertag: string): Promise<bool
 }
 
 export function getTemplate(): MessageEmbed {
-    return new MessageEmbed().setAuthor('UnitedDB', 'https://cdn.discordapp.com/icons/958156910480216174/ad9d2b5e3aca1f23fa830cab9ff4048e.webp?size=96')
+    return new MessageEmbed().setAuthor('UnitedDB', 'https://i.imgur.com/aYknEru.png')
 }
 
 export function isValidUrl(url: string): boolean {

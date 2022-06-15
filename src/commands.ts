@@ -140,7 +140,7 @@ class commandManager {
 
         const loading = getTemplate()
         .setDescription('Fetching banned players...')
-        await interaction.reply({embeds: [loading], ephemeral: true })
+        await interaction.reply({embeds: [loading], ephemeral: false })
 
         var embed;
         try {
@@ -438,7 +438,7 @@ class commandManager {
         }
         const embed = getTemplate()
         .setDescription(cmdlist)
-        await interaction.reply({embeds: [embed], ephemeral: true })
+        await interaction.reply({embeds: [embed], ephemeral: false })
     }
 }
 export const CMDMAN = new commandManager()

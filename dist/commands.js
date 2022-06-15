@@ -158,7 +158,7 @@ class commandManager {
             return;
         const loading = (0, utils_1.getTemplate)()
             .setDescription('Fetching banned players...');
-        await interaction.reply({ embeds: [loading], ephemeral: true });
+        await interaction.reply({ embeds: [loading], ephemeral: false });
         var embed;
         try {
             const bannedPlayers = await (await axios_1.default.get(`${index_1.DB_API}/BannedPlayers`, {
@@ -427,7 +427,7 @@ class commandManager {
         }
         const embed = (0, utils_1.getTemplate)()
             .setDescription(cmdlist);
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], ephemeral: false });
     }
 }
 exports.CMDMAN = new commandManager();

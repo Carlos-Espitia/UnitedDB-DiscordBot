@@ -33,8 +33,12 @@ const utils_1 = require("./utils");
 const axios_1 = __importDefault(require("axios"));
 exports.auth = new prismarine_auth_1.Authflow(`QSMX`, `./auth`, {});
 exports.DB_API = 'http://localhost:5000';
+// might add a looping status later 
+const status = `/help`;
 exports.client.once('ready', () => {
+    var _a;
     console.log('bot is online!');
+    (_a = exports.client.user) === null || _a === void 0 ? void 0 : _a.setPresence({ activities: [{ name: status }] });
     (0, commands_1.RegisterCommands)();
 });
 exports.client.on('interactionCreate', async (interaction) => {
@@ -50,7 +54,7 @@ exports.client.on('interactionCreate', async (interaction) => {
             //notify reporter
             var id = (_b = (_a = interaction.message) === null || _a === void 0 ? void 0 : _a.embeds[0].description) === null || _b === void 0 ? void 0 : _b.split('ID: ')[1].split('\n')[0].trim();
             var declinedReport = (0, utils_1.getTemplate)()
-                .setDescription(`${interaction.user.username} has declined the report. Reason: ${reason_Input}`);
+                .setDescription(`${interaction.user.username}#${interaction.user.discriminator} has declined the report. Reason: ${reason_Input}`);
             //@ts-ignore // .delete() is not included in the discord js types
             // interaction.reply({ embeds: [declinedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
             exports.client.channels.cache.get(config_1.config.LogChannel).send({ embeds: [declinedReport] }).then(msg => { setTimeout(() => msg.delete(), 7000); }).catch();
@@ -69,11 +73,6 @@ exports.client.on('interactionCreate', async (interaction) => {
                 interaction.message.delete();
             }
             catch (_m) { }
-            //notify reporter
-            //@ts-ignore // .delete() is not included in the discord js types
-            // interaction.reply({ embeds: [acceptedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
-            // ( client.channels.cache.get(config.LogChannel) as TextChannel ).send({embeds: [acceptedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch()
-            // console.log(interaction.message?.embeds[0].description)
             var xuid = (_d = (_c = interaction.message) === null || _c === void 0 ? void 0 : _c.embeds[0].description) === null || _d === void 0 ? void 0 : _d.split('**Xuid**: ')[1].split('\n')[0].trim();
             var reason = (_f = (_e = interaction.message) === null || _e === void 0 ? void 0 : _e.embeds[0].description) === null || _f === void 0 ? void 0 : _f.split('**Reason**: ')[1].split('\n')[0].trim();
             var proof = (_h = (_g = interaction.message) === null || _g === void 0 ? void 0 : _g.embeds[0].description) === null || _h === void 0 ? void 0 : _h.split('**Proof**: ')[1].split('\n')[0].trim();
@@ -116,7 +115,7 @@ exports.client.on('interactionCreate', async (interaction) => {
             }
             const id = (_k = (_j = interaction.message) === null || _j === void 0 ? void 0 : _j.embeds[0].description) === null || _k === void 0 ? void 0 : _k.split('ID: ')[1].split('\n')[0].trim();
             const acceptedReport = (0, utils_1.getTemplate)()
-                .setDescription(`${interaction.user.username} has accepted the report.`);
+                .setDescription(`${interaction.user.username}#${interaction.user.discriminator} has accepted the report.`);
             if (!id)
                 return; // not supposed to be undefined 
             const user = await exports.client.users.fetch(id).catch();

@@ -85,7 +85,7 @@ async function validateGamertag(xbl, gamertag) {
 }
 exports.validateGamertag = validateGamertag;
 function getTemplate() {
-    return new discord_js_1.MessageEmbed().setAuthor('UnitedDB', 'https://cdn.discordapp.com/icons/958156910480216174/ad9d2b5e3aca1f23fa830cab9ff4048e.webp?size=96');
+    return new discord_js_1.MessageEmbed().setAuthor('UnitedDB', 'https://i.imgur.com/aYknEru.png');
 }
 exports.getTemplate = getTemplate;
 function isValidUrl(url) {

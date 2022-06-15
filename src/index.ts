@@ -11,10 +11,15 @@ import { BanningPlayerPost } from "./types";
 export const auth = new Authflow(`QSMX`, `./auth`, {})
 export const DB_API = 'http://localhost:5000'
 
+// might add a looping status later 
+const status = `/help`
+
 client.once('ready', () => {
     console.log('bot is online!')
+    client.user?.setPresence({ activities: [{name: status}]})
     RegisterCommands()
 })
+
 
 client.on('interactionCreate', async (interaction) => {
     if(interaction.isModalSubmit()) {
@@ -27,7 +32,7 @@ client.on('interactionCreate', async (interaction) => {
             //notify reporter
             var id = interaction.message?.embeds[0].description?.split('ID: ')[1].split('\n')[0].trim()
             var declinedReport = getTemplate()
-            .setDescription(`${interaction.user.username} has declined the report. Reason: ${reason_Input}`);
+            .setDescription(`${interaction.user.username}#${interaction.user.discriminator} has declined the report. Reason: ${reason_Input}`);
 
             //@ts-ignore // .delete() is not included in the discord js types
             // interaction.reply({ embeds: [declinedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
@@ -44,15 +49,6 @@ client.on('interactionCreate', async (interaction) => {
 
             //@ts-ignore // .delete() is not included in the discord js types
             try{interaction.message.delete()} catch {}
-
-            //notify reporter
-
-            //@ts-ignore // .delete() is not included in the discord js types
-            // interaction.reply({ embeds: [acceptedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch();
-
-            // ( client.channels.cache.get(config.LogChannel) as TextChannel ).send({embeds: [acceptedReport]}).then(msg => {setTimeout(() => msg.delete(), 7000)}).catch()
-
-            // console.log(interaction.message?.embeds[0].description)
 
             var xuid = interaction.message?.embeds[0].description?.split('**Xuid**: ')[1].split('\n')[0].trim()
             var reason = interaction.message?.embeds[0].description?.split('**Reason**: ')[1].split('\n')[0].trim()
@@ -98,7 +94,7 @@ client.on('interactionCreate', async (interaction) => {
 
             const id = interaction.message?.embeds[0].description?.split('ID: ')[1].split('\n')[0].trim();
             const acceptedReport = getTemplate()
-            .setDescription(`${interaction.user.username} has accepted the report.`);
+            .setDescription(`${interaction.user.username}#${interaction.user.discriminator} has accepted the report.`);
 
             if(!id) return // not supposed to be undefined 
             const user = await client.users.fetch(id).catch();
