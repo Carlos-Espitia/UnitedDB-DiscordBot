@@ -335,7 +335,6 @@ class commandManager {
 
     async requestBanPlayer(interaction: Discord.CommandInteraction<Discord.CacheType>) {
         //interaction.member.user.username
-        if(!interaction.member) return
         const loading = getTemplate()
         .setDescription('Requesting player ban...')
         await interaction.reply({embeds: [loading], ephemeral: true })
@@ -387,7 +386,12 @@ class commandManager {
             .setDescription(`You did not provide a valid URL for proof!`)
             return interaction.editReply({ embeds: [embed]});
         }
-
+   const user = await client.users.fetch(interaction.member.user.id);
+        const dm = getTemplate()
+        .setDescription(`If You Like The Service we Are Providing Please Consider Donating To Keep Us Up And Running`)
+        user.send({embeds: [dm]})
+        
+        
         //send to private channel for admins to look over the report
         const reportEmbed = new MessageEmbed().setAuthor('Ban Player Request', 'https://cdn.discordapp.com/icons/958156910480216174/ad9d2b5e3aca1f23fa830cab9ff4048e.webp?size=96')
         .setDescription(``+
