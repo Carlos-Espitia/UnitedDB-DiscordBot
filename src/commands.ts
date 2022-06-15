@@ -335,6 +335,7 @@ class commandManager {
 
     async requestBanPlayer(interaction: Discord.CommandInteraction<Discord.CacheType>) {
         //interaction.member.user.username
+         if(!interaction.member) return
         const loading = getTemplate()
         .setDescription('Requesting player ban...')
         await interaction.reply({embeds: [loading], ephemeral: true })
