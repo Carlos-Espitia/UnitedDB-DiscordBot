@@ -7,6 +7,19 @@ import axios from 'axios';
 
     
 const registerCommands = [
+    
+    
+      {
+        name: 'saftey-lookup',
+        description: 'Invite bot to discord',
+        options: [
+          {
+          name: `Gamertag`,
+          description: `Gamertag For lookup`,
+          required: `true`
+      },
+          ]
+    },
     {
         name: 'db_lookup',
         description: 'Lookup banned player, provide gamertag or xuid',
