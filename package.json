@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+     "@discordjs/builders": "^0.5.0",
     "@discordjs/rest": "^0.5.0",
     "@types/node": "^17.0.41",
     "@xboxreplay/xboxlive-api": "^3.4.3",
