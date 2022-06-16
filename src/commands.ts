@@ -9,7 +9,7 @@ import axios from 'axios';
 const registerCommands = [
     
     
-      {
+    /*  {
         name: 'saftey-lookup',
         description: 'Invite bot to discord',
         options: [
@@ -19,7 +19,7 @@ const registerCommands = [
           required: `true`
       },
           ]
-    },
+    },*/
     {
         name: 'db_lookup',
         description: 'Lookup banned player, provide gamertag or xuid',
@@ -173,7 +173,10 @@ class commandManager {
         }
 
     }
-
+    async safe(interaction: Discord.CommandInteraction<Discord.CacheType>) {
+        
+        
+    })
     async invite(interaction: Discord.CommandInteraction<Discord.CacheType>) {
         if(!interaction.member) return
 
