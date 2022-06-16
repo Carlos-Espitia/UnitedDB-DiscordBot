@@ -55,7 +55,7 @@ export async function validateGamertag(xbl: any, gamertag: string): Promise<bool
 }
 
 export function getTemplate(): MessageEmbed {
-    return new MessageEmbed().setAuthor('UnitedDB', 'https://i.imgur.com/aYknEru.png').setColor(`#0006FF`).setFooter(`${time(new Date())}`)
+    return new MessageEmbed().setAuthor('UnitedDB', 'https://i.imgur.com/aYknEru.png').setColor(`#6397FF`).setFooter(`${time(new Date())}`)
 }
 
 export function isValidUrl(url: string): boolean {
