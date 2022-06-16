@@ -18,7 +18,7 @@ var place = -1;
 client.once('ready', () => {
     console.log('bot is online!')
     RegisterCommands()
-    client.user?.setPresence({ activities: [{name: status}]})
+    client.user?.setActivity(`/help`,{type: `WATCHING`})
 })
 client.on('interactionCreate', async (interaction) => {
     if(interaction.isModalSubmit()) {
