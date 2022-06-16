@@ -12,15 +12,14 @@ export const auth = new Authflow(`QSMX`, `./auth`, {})
 export const DB_API = 'http://localhost:5000'
 
 // might add a looping status later 
-const status = `/help`
+const status = `/help`;
+var place = -1;
 
 client.once('ready', () => {
     console.log('bot is online!')
-    client.user?.setPresence({ activities: [{name: status}]})
     RegisterCommands()
+    client.user?.setActivity(`/help`,{type: `WATCHING`})
 })
-
-
 client.on('interactionCreate', async (interaction) => {
     if(interaction.isModalSubmit()) {
         if(interaction.customId === 'Request_Decline_Modal') {

@@ -160,7 +160,6 @@ class commandManager {
         }
 
     }
-
     async invite(interaction: Discord.CommandInteraction<Discord.CacheType>) {
         if(!interaction.member) return
 
