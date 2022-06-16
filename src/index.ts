@@ -12,14 +12,38 @@ export const auth = new Authflow(`QSMX`, `./auth`, {})
 export const DB_API = 'http://localhost:5000'
 
 // might add a looping status later 
-const status = `/help`
+const status: { name: string, type?: any }[] = [
+    {
+        name: `/help`,
+        type: `PLAYING`
+    },
+    {
+        name: ` _ hackers`,
+        type: 'WATCHING'
+    },
+    {
+        name: `Help us by donating!`,
+    }
+]
+var place = -1;
 
 client.once('ready', () => {
     console.log('bot is online!')
-    client.user?.setPresence({ activities: [{name: status}]})
     RegisterCommands()
+    changeStatus()
 })
 
+
+function changeStatus() {
+    place++
+    
+    const settings: any = { activities: [ { name: status[place].name } ] }
+    if(status[place].type) settings.activities[0].type = status[place].type
+    client.user?.setPresence(settings)
+
+    if(place >= status.length) place = -1;
+    setTimeout(changeStatus, 3000)
+}
 
 client.on('interactionCreate', async (interaction) => {
     if(interaction.isModalSubmit()) {
