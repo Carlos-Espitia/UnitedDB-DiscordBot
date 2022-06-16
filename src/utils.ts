@@ -1,5 +1,6 @@
 import * as XboxLiveAPI from '@xboxreplay/xboxlive-api';
 import { MessageEmbed } from 'discord.js';
+const { time } = require('@discordjs/builders');
 
 /// xbox live api stuff 
 export async function getXuidByGamertag(xbl: any, gamertag: string): Promise<number | undefined> {
@@ -54,7 +55,7 @@ export async function validateGamertag(xbl: any, gamertag: string): Promise<bool
 }
 
 export function getTemplate(): MessageEmbed {
-    return new MessageEmbed().setAuthor('UnitedDB', 'https://i.imgur.com/aYknEru.png').setColor(`#0006FF`)
+    return new MessageEmbed().setAuthor('UnitedDB', 'https://i.imgur.com/aYknEru.png').setColor(`#0006FF`).setFooter(`${time(new Date())}`)
 }
 
 export function isValidUrl(url: string): boolean {
