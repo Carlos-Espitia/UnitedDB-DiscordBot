@@ -22,6 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.isValidUrl = exports.getTemplate = exports.validateGamertag = exports.validateXuid = exports.getGamertagByXuid = exports.getXuidByGamertag = void 0;
 const XboxLiveAPI = __importStar(require("@xboxreplay/xboxlive-api"));
 const discord_js_1 = require("discord.js");
+const { time } = require('@discordjs/builders');
 /// xbox live api stuff 
 async function getXuidByGamertag(xbl, gamertag) {
     try {
@@ -85,7 +86,7 @@ async function validateGamertag(xbl, gamertag) {
 }
 exports.validateGamertag = validateGamertag;
 function getTemplate() {
-    return new discord_js_1.MessageEmbed().setAuthor('UnitedDB', 'https://i.imgur.com/aYknEru.png');
+    return new discord_js_1.MessageEmbed().setAuthor('UnitedDB', 'https://i.imgur.com/aYknEru.png').setColor(`#6397FF`).setTimestamp(Date.now() / 1000);
 }
 exports.getTemplate = getTemplate;
 function isValidUrl(url) {

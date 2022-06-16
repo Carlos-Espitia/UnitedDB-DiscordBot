@@ -385,6 +385,10 @@ class commandManager {
                 .setDescription(`You did not provide a valid URL for proof!`);
             return interaction.editReply({ embeds: [embed] });
         }
+        const user = await index_1.client.users.fetch(interaction.member.user.id);
+        const dm = (0, utils_1.getTemplate)()
+            .setDescription(`If You Like The Service we Are Providing Please Consider Donating To Keep Us Up And Running`);
+        user.send({ embeds: [dm] });
         //send to private channel for admins to look over the report
         const reportEmbed = new discord_js_1.MessageEmbed().setAuthor('Ban Player Request', 'https://cdn.discordapp.com/icons/958156910480216174/ad9d2b5e3aca1f23fa830cab9ff4048e.webp?size=96')
             .setDescription(`` +
