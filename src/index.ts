@@ -17,6 +17,7 @@ var place = -1;
 
 client.once('ready', () => {
     console.log('bot is online!')
+    client.application.commands.set([])
     RegisterCommands()
     client.user?.setActivity(`/help`,{type: `WATCHING`})
 })
