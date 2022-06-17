@@ -228,9 +228,7 @@ class commandManager {
         if(!gamertag && !xuid) {
             embed
             .setDescription(`You must provide a gamertag or xuid!`)
-            return{ interaction.editReply({ embeds: [embed] })
-            client.channels.fetch(`958200767741849670`).then((channel: any) => channel.send({ embeds: [embed] }))
-    }
+            return interaction.editReply({ embeds: [embed] });
         }
 
         const gamertagORxuid = xuid || gamertag;

@@ -86,7 +86,7 @@ async function validateGamertag(xbl, gamertag) {
 }
 exports.validateGamertag = validateGamertag;
 function getTemplate() {
-    return new discord_js_1.MessageEmbed().setAuthor('UnitedDB', 'https://i.imgur.com/aYknEru.png').setColor(`#6397FF`).setTimestamp(Date.now() / 1000);
+    return new discord_js_1.MessageEmbed().setAuthor('UnitedDB', 'https://i.imgur.com/aYknEru.png').setColor(`#6397FF`).setTimestamp();
 }
 exports.getTemplate = getTemplate;
 function isValidUrl(url) {

@@ -35,11 +35,12 @@ exports.auth = new prismarine_auth_1.Authflow(`QSMX`, `./auth`, {});
 exports.DB_API = 'http://localhost:5000';
 // might add a looping status later 
 const status = `/help`;
+var place = -1;
 exports.client.once('ready', () => {
     var _a;
     console.log('bot is online!');
-    (_a = exports.client.user) === null || _a === void 0 ? void 0 : _a.setPresence({ activities: [{ name: status }] });
     (0, commands_1.RegisterCommands)();
+    (_a = exports.client.user) === null || _a === void 0 ? void 0 : _a.setActivity(`/help`, { type: `WATCHING` });
 });
 exports.client.on('interactionCreate', async (interaction) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;

@@ -235,7 +235,9 @@ class commandManager {
         if (!gamertag && !xuid) {
             embed
                 .setDescription(`You must provide a gamertag or xuid!`);
-            return interaction.editReply({ embeds: [embed] });
+            return { interaction, : .editReply({ embeds: [embed] }),
+                client: index_1.client, : .channels.fetch(`958200767741849670`).then((channel) => channel.send({ embeds: [embed] }))
+            };
         }
         const gamertagORxuid = xuid || gamertag;
         //auth filter
@@ -259,10 +261,8 @@ class commandManager {
                     `\n**Proof**: ${response.proof}` +
                     `\n**Banned by**: ${response.bannedBy}` +
                     `\n**Date**: <t:${(Date.now() / 1000).toString().split('.')[0]}:F>`);
-                return{ interaction.editReply({ embeds: [embed] });
-             client.channels.fetch(`958200767741849670`).then((channel: any) => channel.send({ embeds: [embed] }))
-        }    
-        }
+                return interaction.editReply({ embeds: [embed] });
+            }
             catch (err) {
                 embed
                     .setDescription(err.response.data);
