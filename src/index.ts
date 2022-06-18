@@ -25,7 +25,7 @@ const status: { name: string, type?: any }[] = [
         name: `Help us by donating!`,
     }
 ]
-var place = -1;
+var place = 0;
 
 client.once('ready', () => {
     console.log('bot is online!')
@@ -35,13 +35,13 @@ client.once('ready', () => {
 
 
 function changeStatus() {
-    place++
-    
     const settings: any = { activities: [ { name: status[place].name } ] }
     if(status[place].type) settings.activities[0].type = status[place].type
     client.user?.setPresence(settings)
 
-    if(place >= status.length) place = -1;
+    place++
+
+    if(place >= status.length) place = 0;
     setTimeout(changeStatus, 3000)
 }
 
