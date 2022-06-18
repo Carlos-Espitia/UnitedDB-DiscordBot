@@ -160,7 +160,6 @@ class commandManager {
         }
 
     }
-
     async invite(interaction: Discord.CommandInteraction<Discord.CacheType>) {
         if(!interaction.member) return
 
@@ -335,7 +334,7 @@ class commandManager {
 
     async requestBanPlayer(interaction: Discord.CommandInteraction<Discord.CacheType>) {
         //interaction.member.user.username
-         if(!interaction.member) return
+        if(!interaction.member) return
         const loading = getTemplate()
         .setDescription('Requesting player ban...')
         await interaction.reply({embeds: [loading], ephemeral: true })
@@ -387,7 +386,7 @@ class commandManager {
             .setDescription(`You did not provide a valid URL for proof!`)
             return interaction.editReply({ embeds: [embed]});
         }
-   const user = await client.users.fetch(interaction.member.user.id);
+        const user = await client.users.fetch(interaction.member.user.id);
         const dm = getTemplate()
         .setDescription(`If You Like The Service we Are Providing Please Consider Donating To Keep Us Up And Running`)
         user.send({embeds: [dm]})

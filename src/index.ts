@@ -28,11 +28,9 @@ const status: { name: string, type?: any }[] = [
 var place = 0;
 
 client.once('ready', () => {
-    console.log('bot is online!')
     RegisterCommands()
     changeStatus()
 })
-
 
 function changeStatus() {
     const settings: any = { activities: [ { name: status[place].name } ] }
