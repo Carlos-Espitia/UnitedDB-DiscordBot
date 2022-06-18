@@ -16,12 +16,15 @@ export const config = {
         '578611714988441634', //Lego#9666
         '857334147680305203', //⃤🌌Mx.Bread🌌⃤
         `815033074378342460`, //Simply
+        `943653593548984341`, //Point
+        `442067425849245696`,//mando
     ],
     Admins: [
         '421053214230708225', //carlos
         '650442844078735360', //love
         '566770844286844953', //beluga
         `815033074378342460`, //Simply
+        '814148378777878588', //Romann#0014
     ],
     UnitedDBLoginAdmin: 'UnitedDBadmin:sawe1459',
     UnitedDBLoginStaff: 'UnitedDBstaff:sawe1459',
