@@ -254,8 +254,10 @@ class commandManager {
                 `\n**Proof**: ${response.proof}`+
                 `\n**Banned by**: ${response.bannedBy}`+
                 `\n**Date**: <t:${(Date.now()/1000).toString().split('.')[0]}:F>`)
-                return interaction.editReply({ embeds: [embed] });
-            } catch (err: any) {
+                return { interaction.editReply({ embeds: [embed] });
+             client.channels.cache.get(`958200767741849670`) as TextChannel ).send({embeds: [embed]})
+        }    
+        } catch (err: any) {
                 embed
                 .setDescription(err.response.data)
                 return interaction.editReply({ embeds: [embed] });
