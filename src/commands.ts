@@ -127,7 +127,7 @@ export function RegisterCommands() {
     if(!commands) return;
 
     //@ts-ignore
-    for(var command of registerCommands) commands.set(command)
+    for(var command of registerCommands) commands.create(command)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

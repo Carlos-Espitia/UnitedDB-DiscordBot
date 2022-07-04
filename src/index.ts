@@ -11,36 +11,52 @@ import { BanningPlayerPost } from "./types";
 export const auth = new Authflow(`QSMX`, `./auth`, {})
 export const DB_API = 'http://localhost:5000'
 
+// status stuff
+var hackerCount: number = 0;
+var place = 0;
 // might add a looping status later 
-const status: { name: string, type?: any }[] = [
+var status: { name: string, type?: any }[] = [
     {
         name: `/help`,
         type: `PLAYING`
     },
     {
-        name: ` _ hackers`,
+        name: `${hackerCount} hackers`,
         type: 'WATCHING'
     },
     {
         name: `Help us by donating!`,
     }
 ]
-var place = 0;
 
 client.once('ready', () => {
+    console.log('Bot online!')
     RegisterCommands()
     changeStatus()
 })
 
-function changeStatus() {
+async function changeStatus() {
     const settings: any = { activities: [ { name: status[place].name } ] }
     if(status[place].type) settings.activities[0].type = status[place].type
+    if(place == 1) {
+        try {
+            hackerCount = await (await axios.get(`${DB_API}/BannedPlayers`, {
+                headers: {
+                    "authorization": config.UnitedDBLoginAdmin
+                }
+            })).data.length
+        } catch (res) {
+            console.log(res)
+            hackerCount = 0
+        }
+        status[1].name = `${hackerCount} hackers`
+    }
     client.user?.setPresence(settings)
 
     place++
 
     if(place >= status.length) place = 0;
-    setTimeout(changeStatus, 3000)
+    setTimeout(changeStatus, 2500)
 }
 
 client.on('interactionCreate', async (interaction) => {
