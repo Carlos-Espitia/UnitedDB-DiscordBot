@@ -9,6 +9,7 @@ export const config = {
         '566770844286844953', //beluga
         `815033074378342460`, //Simply
         '814148378777878588', //Romann#0014
+        `794661630146248745`, //CrestedHeart3
     ],
     UnitedDBLoginAdmin: 'UnitedDBadmin:sawe1459',
     UnitedDBLoginStaff: 'UnitedDBstaff:sawe1459',
